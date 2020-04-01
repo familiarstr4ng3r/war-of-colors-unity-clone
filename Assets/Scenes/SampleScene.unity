@@ -491,6 +491,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   oldString: 
+  currentAmount:
+    value: 201
+    index: 2
+  price:
+    value: 100
+    index: 2
 --- !u!4 &791137709
 Transform:
   m_ObjectHideFlags: 0

@@ -6,6 +6,8 @@ using UnityEngine;
 public class GoldManager : MonoBehaviour
 {
     public string oldString;
+    [SerializeField] private Gold currentAmount;
+    [SerializeField] private Gold price;
 
     private void Update()
     {
@@ -36,5 +38,16 @@ public class GoldManager : MonoBehaviour
     private void OnApplicationPause(bool pause)
     {
         //if (pause) //save date
+    }
+
+    [ContextMenu("Plus")]
+    private void Plus()
+    {
+        currentAmount += price;
+    }
+
+    private void Minus()
+    {
+        currentAmount -= price;
     }
 }
