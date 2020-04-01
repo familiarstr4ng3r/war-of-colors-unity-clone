@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CustomPropertyDrawer(typeof(Gold))]
+[CustomPropertyDrawer(typeof(Currency))]
 public class GoldPropertyDrawer : PropertyDrawer
 {
     private const int height = 18;
@@ -32,16 +32,16 @@ public class GoldPropertyDrawer : PropertyDrawer
 
         if (property.isExpanded)
         {
-            var value = property.FindPropertyRelative("value");
+            var valueProperty = property.FindPropertyRelative("value");
             position.y += height + space;
-            EditorGUI.PropertyField(position, value);
+            EditorGUI.PropertyField(position, valueProperty);
 
             //Box(position, Color.green);
 
             //
-            string[] VALUES = GenerateArray("ab");
+            string[] VALUES = Currency.GenerateArray();
 
-            int[] optionValues = new int[VALUES.Length];//
+            int[] optionValues = new int[VALUES.Length];
             for (int i = 0; i < optionValues.Length; i++) optionValues[i] = i;
 
             GUIContent[] displayedOptions = new GUIContent[VALUES.Length];
@@ -54,7 +54,7 @@ public class GoldPropertyDrawer : PropertyDrawer
 
             int index = indexProperty.intValue;
             string format = index > 0 ? $"{VALUES[index]}" : string.Empty;
-            string text = $"{value.floatValue} {format}";
+            string text = $"{valueProperty.floatValue} {format}";
 
             position.y += height + space;
             GUI.enabled = false;
@@ -72,32 +72,5 @@ public class GoldPropertyDrawer : PropertyDrawer
         GUI.color = color;
         GUI.Box(rect, string.Empty);
         GUI.color = old;
-    }
-
-    private string[] GenerateArray(string word)
-    {
-        int count = word.Length;
-
-        int first = count;
-        int second = count * count;
-        string[] array = new string[first + second + 1];
-
-        array[0] = "Empty";
-
-        for (int i = 0; i < count; i++)
-        {
-            array[i + 1] = word[i].ToString();
-        }
-
-        for (int i = 0; i < count; i++)
-        {
-            for (int j = 0; j < count; j++)
-            {
-                int currentIndex = i * count + j;
-                array[currentIndex + count + 1] = word[i].ToString() + word[j].ToString();
-            }
-        }
-
-        return array;
     }
 }
