@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GridCreator : MonoBehaviour
 {
@@ -9,19 +10,29 @@ public class GridCreator : MonoBehaviour
     [SerializeField] private Vector2 hexSize = Vector2.zero;
     [SerializeField] private float gap = 0;
     [SerializeField, Range(0, 1)] private float percentage = 0;
+    [Space]
+    [SerializeField] private Transform parent = null;
+    [SerializeField] private int size = 1;
+    [SerializeField] private GameObject textPrefab = null;
+
+    //0.8 0.92 ui
+    //0.88 1 world
 
     private Vector3 startPos = Vector3.zero;
-
+    private float screenHeight = 0;
     private HexTile[,] grid = null;
 
     private void Start()
     {
-        SpawnGrid();
+        screenHeight = FindObjectOfType<CanvasScaler>().referenceResolution.y;
+
+        SpawnGrid(parent);
     }
 
-    private void SpawnGrid()
+    private void SpawnGrid(Transform parent)
     {
         hexSize += hexSize * gap;
+        hexSize *= size;
 
         startPos = CalculateStartPos();
 
@@ -32,9 +43,22 @@ public class GridCreator : MonoBehaviour
             for (int x = 0; x < gridSize.x; x++)
             {
                 Vector3 pos = Convert(new Vector2Int(x, y));
-                var tile = Instantiate(tilePrefab, pos, Quaternion.identity, transform);
+                var tile = Instantiate(tilePrefab, pos, Quaternion.identity, parent);
                 tile.name = $"Tile {x}/{y}";
                 grid[x, y] = tile;
+
+                var rect = tile.GetComponent<RectTransform>();
+
+                if (rect)
+                {
+                    rect.sizeDelta *= size;
+                }
+                else
+                {
+                    var textParent = GameObject.Find("TextParent").transform;
+                    var p = Camera.main.WorldToScreenPoint(pos);
+                    var text = Instantiate(textPrefab, p, Quaternion.identity, textParent);
+                }
             }
         }
     }

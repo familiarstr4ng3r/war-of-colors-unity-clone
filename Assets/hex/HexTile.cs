@@ -15,4 +15,9 @@ public class HexTile : MonoBehaviour
     {
         spriteRenderer.color = newColor;
     }
+
+    //public void SetSize()
+    //{
+
+    //}
 }
