@@ -6,13 +6,30 @@ using UnityEngine;
 public class CurrencyManager : MonoBehaviour
 {
     [SerializeField] string oldString;
-    //[SerializeField] private Currency currentAmount;
-    //[SerializeField] private Currency price;
     [SerializeField] private double someDouble = 0;
     [SerializeField] private string formattedText = string.Empty;
     [SerializeField] private string formattedText1 = string.Empty;
+    [Header("New")]
+    [SerializeField] private Currency price;
+    [SerializeField] private Currency[] currentAmount = null;
+
+    [ContextMenu("SetValues")]
+    private void SetValues()
+    {
+        currentAmount = new Currency[Currency.GenerateArray().Length];
+
+        for (int i = 0, length = currentAmount.Length; i < length; i++)
+        {
+            currentAmount[i].Index = i;
+        }
+    }
 
     private void Update()
+    {
+        HandleTime();
+    }
+
+    private void HandleTime()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {

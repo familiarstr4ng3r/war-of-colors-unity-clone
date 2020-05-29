@@ -32,37 +32,43 @@ public class GoldPropertyDrawer : PropertyDrawer
 
         if (property.isExpanded)
         {
-            var valueProperty = property.FindPropertyRelative("value");
-            position.y += height + space;
-            EditorGUI.PropertyField(position, valueProperty);
-
-            //Box(position, Color.green);
-
-            //
-            string[] VALUES = Currency.GenerateArray();
-
-            int[] optionValues = new int[VALUES.Length];
-            for (int i = 0; i < optionValues.Length; i++) optionValues[i] = i;
-
-            GUIContent[] displayedOptions = new GUIContent[VALUES.Length];
-            for (int i = 0; i < displayedOptions.Length; i++) displayedOptions[i] = new GUIContent(VALUES[i]);
-
-            var indexProperty = property.FindPropertyRelative("index");
-            position.y += height + space;
-            EditorGUI.IntPopup(position, indexProperty, displayedOptions, optionValues);
-            //
-
-            int index = indexProperty.intValue;
-            string format = index > 0 ? $"{VALUES[index]}" : string.Empty;
-            string text = $"{valueProperty.floatValue} {format}";
-
-            position.y += height + space;
-            GUI.enabled = false;
-            EditorGUI.TextField(position, "Format", text);
-            GUI.enabled = true;
+            DrawExpanded(property, position);
         }
 
         EditorGUI.EndProperty();
+    }
+
+    private void DrawExpanded(SerializedProperty property, Rect position)
+    {
+        var valueProperty = property.FindPropertyRelative("value");
+        var indexProperty = property.FindPropertyRelative("index");
+
+        position.y += height + space;
+        EditorGUI.PropertyField(position, valueProperty);
+
+        //Box(position, Color.green);
+
+        //draw enum popum
+        string[] VALUES = Currency.GenerateArray();
+
+        int[] optionValues = new int[VALUES.Length];
+        for (int i = 0; i < optionValues.Length; i++) optionValues[i] = i;
+
+        GUIContent[] displayedOptions = new GUIContent[VALUES.Length];
+        for (int i = 0; i < displayedOptions.Length; i++) displayedOptions[i] = new GUIContent(VALUES[i]);
+
+        position.y += height + space;
+        EditorGUI.IntPopup(position, indexProperty, displayedOptions, optionValues);
+
+        //draw format
+        int index = indexProperty.intValue;
+        string format = index > 0 ? $"{VALUES[index]}" : string.Empty;
+        string text = $"{valueProperty.floatValue} {format}";
+
+        position.y += height + space;
+        GUI.enabled = false;
+        EditorGUI.TextField(position, "Format", text);
+        GUI.enabled = true;
     }
 
     private void Box(Rect rect, Color color)

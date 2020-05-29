@@ -13,6 +13,8 @@ public struct Currency
     [SerializeField] private float value;
     [SerializeField] private int index;
 
+    public int Index { get => index; set => index = value; }
+
     public Currency(float _value, int _index)
     {
         value = _value;
