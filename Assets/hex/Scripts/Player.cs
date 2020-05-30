@@ -7,6 +7,7 @@ public class Player
 {
     public string name;
     public Color color = Color.white;
+    public int AvailableAmount = 0;
 
     private List<HexTile> tiles = new List<HexTile>();
 
@@ -26,5 +27,10 @@ public class Player
     public bool HasTile(HexTile tile)
     {
         return tiles.Contains(tile);
+    }
+
+    public void OnSecondStage()
+    {
+        AvailableAmount += tiles.Count;
     }
 }

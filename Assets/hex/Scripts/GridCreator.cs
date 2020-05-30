@@ -28,7 +28,7 @@ public class GridCreator : MonoBehaviour
         SetNeighbours();
     }
 
-    public void SetPlayers(List<Player> players)
+    public void SetPlayers(List<Player> players, int startAmount)
     {
         for (int i = 0, length = players.Count; i < length; i++)
         {
@@ -36,7 +36,7 @@ public class GridCreator : MonoBehaviour
             int y = Random.Range(0, gridSize.y);
 
             var tile = grid[x, y];
-            tile.Amount = 2;
+            tile.Amount = startAmount;
 
             players[i].AddTile(tile);
         }

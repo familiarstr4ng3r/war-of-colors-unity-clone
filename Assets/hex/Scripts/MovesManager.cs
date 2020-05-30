@@ -11,8 +11,12 @@ public class MovesManager : MonoBehaviour
     private Camera cam = null;
 
     private bool isGameStarted = false;
-    [SerializeField] private bool isFirstStage = true;
+    private bool isFirstStage = true;
+    private int lap = 0;
+
+    [SerializeField] private int startAmount = 10;
     [SerializeField] private Transform circle = null;
+    [SerializeField] private NextStageButton nextStageButton = null;
     private HexTile selectedTile = null;
 
     private void Update()
@@ -27,10 +31,12 @@ public class MovesManager : MonoBehaviour
 
         UpdateCurrentPlayer();
 
-        //to do: create grid
         var grid = FindObjectOfType<GridCreator>();
         grid.Create();
-        grid.SetPlayers(players);
+        grid.SetPlayers(players, startAmount);
+
+        nextStageButton.Init(NextStage);
+        nextStageButton.UpdateVisual(isFirstStage);
     }
 
     private void UpdateCurrentPlayer()
@@ -38,10 +44,25 @@ public class MovesManager : MonoBehaviour
         currentPlayer = players[currentPlayerIndex];
     }
 
-    public void NextMove()
+    private void NextStage()
+    {
+        isFirstStage = !isFirstStage;
+
+        nextStageButton.UpdateVisual(isFirstStage);
+
+        if (!isFirstStage)
+        {
+            NextPlayer();
+        }
+    }
+
+    private void NextPlayer()
     {
         if (currentPlayerIndex == players.Count - 1)
+        {
             currentPlayerIndex = 0;
+            lap++;
+        }
         else currentPlayerIndex++;
 
         UpdateCurrentPlayer();
@@ -73,34 +94,61 @@ public class MovesManager : MonoBehaviour
 
     private void HandleMoving(HexTile clickedTile)
     {
-        if (!selectedTile)
+        if (currentPlayer.HasTile(clickedTile))
         {
-            if (currentPlayer.HasTile(clickedTile))
-            {
-                selectedTile = clickedTile;
+            selectedTile = clickedTile;
 
-                circle.position = selectedTile.transform.position;
-            }
+            if (selectedTile.Amount > 1) circle.position = selectedTile.transform.position;
         }
         else
         {
-            if (selectedTile.Amount > 1 && selectedTile.HasNeighbour(clickedTile))
+            if (selectedTile && selectedTile.Amount > 1 && selectedTile.HasNeighbour(clickedTile))
             {
                 //to do: check for enemy
-                selectedTile.Amount -= 1;
-                selectedTile.UpdateVisual(currentPlayer);
 
-                clickedTile.Amount += 1;
-                currentPlayer.AddTile(clickedTile);
+                //clicked is new
+                var enemy = IsPlayerTile(clickedTile);
+                
+                if (enemy != null)
+                {
+                    //tile is enemy
+                }
+                else
+                {
+                    //tile is empty
+                    int newAmount = selectedTile.Amount - 1;
 
-                selectedTile = null;
+                    selectedTile.Amount = 1;
+                    selectedTile.UpdateVisual(currentPlayer);
+
+                    clickedTile.Amount = newAmount;
+                    currentPlayer.AddTile(clickedTile);
+                }
+
+                //selectedTile = null;
+                circle.position = clickedTile.Amount > 1 ? clickedTile.transform.position : new Vector3(20, 20);
             }
-
         }
     }
 
     private void HandleAdding(HexTile clickedTile)
     {
+        //to do: open window
+    }
 
+    private Player IsPlayerTile(HexTile tile)
+    {
+        Player player = null;
+
+        for (int i = 0, length = players.Count; i < length; i++)
+        {
+            if (players[i].HasTile(tile))
+            {
+                player = players[i];
+                break;
+            }
+        }
+
+        return player;
     }
 }
