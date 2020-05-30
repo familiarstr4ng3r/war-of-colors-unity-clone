@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 1664858669382241998}
   - component: {fileID: 8255748095762775692}
   - component: {fileID: 4212772283125013484}
+  - component: {fileID: 7249917851073925637}
   m_Layer: 5
-  m_Name: Text
+  m_Name: '[TileText]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -77,3 +78,15 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 10
+--- !u!114 &7249917851073925637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5843073297236359168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37832248591fa6c48bc692979de0bc4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
