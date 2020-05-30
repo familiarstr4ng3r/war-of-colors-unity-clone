@@ -24,13 +24,31 @@ public class Player
         tiles.Add(tile);
     }
 
+    public void RemoveTile(HexTile tile)
+    {
+        tile.UpdateVisual(null);
+
+        tiles.Remove(tile);
+    }
+
     public bool HasTile(HexTile tile)
     {
         return tiles.Contains(tile);
     }
 
+    public bool IsLooser()
+    {
+        return tiles.Count == 0;
+    }
+
     public void OnSecondStage()
     {
         AvailableAmount += tiles.Count;
+    }
+
+    public override string ToString()
+    {
+        string t = IsLooser() ? "is looser" : "has " + tiles.Count + " tiles";
+        return $"{name} {t}";
     }
 }

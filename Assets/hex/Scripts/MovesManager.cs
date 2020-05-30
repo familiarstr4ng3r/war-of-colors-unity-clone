@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MovesManager : MonoBehaviour
@@ -51,6 +52,8 @@ public class MovesManager : MonoBehaviour
 
     private void NextStage()
     {
+        selectedTile = null;
+
         if (isFirstStage)
         {
             currentPlayer.OnSecondStage();
@@ -75,6 +78,12 @@ public class MovesManager : MonoBehaviour
         else currentPlayerIndex++;
 
         UpdateCurrentPlayer();
+
+        if (currentPlayer.IsLooser())
+        {
+            Debug.Log("пропуск " + currentPlayer.name);
+            NextPlayer();
+        }
     }
 
     public void AddPlayer(Player p)
@@ -123,6 +132,20 @@ public class MovesManager : MonoBehaviour
                 if (enemy != null)
                 {
                     //tile is enemy
+
+                    if (selectedTile.Amount > clickedTile.Amount)
+                    {
+                        //100% win
+                        enemy.RemoveTile(clickedTile);
+
+                        int difference = selectedTile.Amount - clickedTile.Amount;
+                        clickedTile.Amount = difference;
+
+                        currentPlayer.AddTile(clickedTile);
+
+                        selectedTile.Amount = 1;
+                        selectedTile.UpdateVisual(currentPlayer);
+                    }
                 }
                 else
                 {
@@ -138,6 +161,8 @@ public class MovesManager : MonoBehaviour
 
                 //selectedTile = null;
                 circle.position = clickedTile.Amount > 1 ? clickedTile.transform.position : new Vector3(20, 20);
+
+                CheckPlayerWin();
             }
         }
     }
@@ -177,5 +202,38 @@ public class MovesManager : MonoBehaviour
         }
 
         return player;
+    }
+
+    private void CheckPlayerWin()
+    {
+        var winners = players.Where(p => !p.IsLooser()).ToArray();
+
+        if (winners.Length == 1)
+        {
+            Debug.Log($"{winners[0].name} is winner");
+            Debug.Break();
+        }
+    }
+
+    private void OnGUI()
+    {
+        if (currentPlayer == null) return;
+
+        var old = GUI.color;
+        GUI.color = Color.white;
+
+        var rect = new Rect(10, 10, 500, 30);
+
+        GUI.Label(rect, currentPlayer.name);
+
+        for (int i = 0; i < players.Count; i++)
+        {
+            GUI.color = players[i].color;
+            rect.y += 30;
+            string text = players[i].ToString();
+            GUI.Label(rect, text);
+        }
+
+        GUI.color = old;
     }
 }

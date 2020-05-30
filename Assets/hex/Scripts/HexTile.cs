@@ -30,7 +30,8 @@ public class HexTile : MonoBehaviour
 
     public void UpdateVisual(Player p)
     {
-        ChangeColor(p.color);
+        Color c = p != null ? p.color : Color.white;
+        ChangeColor(c);
         tileText.UpdateText(Amount.ToString());
     }
 

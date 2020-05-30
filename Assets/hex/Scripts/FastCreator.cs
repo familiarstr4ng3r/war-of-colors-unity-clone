@@ -8,7 +8,8 @@ public class FastCreator : MonoBehaviour
     {
         var manager = FindObjectOfType<MovesManager>();
         manager.AddPlayer(new Player("1", Color.green));
-        manager.AddPlayer(new Player("2", Color.red));
+        manager.AddPlayer(new Player("2", Color.yellow));
+        manager.AddPlayer(new Player("3", Color.red));
         manager.Init();
     }
 }
