@@ -17,7 +17,11 @@ public class MovesManager : MonoBehaviour
     [SerializeField] private int startAmount = 10;
     [SerializeField] private Transform circle = null;
     [SerializeField] private NextStageButton nextStageButton = null;
+    [SerializeField] private SliderWindow sliderWindow = null;
+
     private HexTile selectedTile = null;
+
+    public static bool IsClickBlocked = false;
 
     private void Update()
     {
@@ -28,6 +32,7 @@ public class MovesManager : MonoBehaviour
     {
         cam = Camera.main;
         isGameStarted = true;
+        IsClickBlocked = false;
 
         UpdateCurrentPlayer();
 
@@ -46,14 +51,18 @@ public class MovesManager : MonoBehaviour
 
     private void NextStage()
     {
-        isFirstStage = !isFirstStage;
-
-        nextStageButton.UpdateVisual(isFirstStage);
-
-        if (!isFirstStage)
+        if (isFirstStage)
+        {
+            currentPlayer.OnSecondStage();
+        }
+        else
         {
             NextPlayer();
         }
+
+        isFirstStage = !isFirstStage;
+
+        nextStageButton.UpdateVisual(isFirstStage);
     }
 
     private void NextPlayer()
@@ -77,6 +86,8 @@ public class MovesManager : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.Mouse0) && isGameStarted)
         {
+            if (IsClickBlocked) return;
+
             Vector3 worldPos = cam.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector3.forward);
 
@@ -133,7 +144,23 @@ public class MovesManager : MonoBehaviour
 
     private void HandleAdding(HexTile clickedTile)
     {
-        //to do: open window
+        if (currentPlayer.AvailableAmount > 0 && currentPlayer.HasTile(clickedTile))
+        {
+            selectedTile = clickedTile;
+            sliderWindow.Activate(currentPlayer.AvailableAmount);
+            IsClickBlocked = true;
+        }
+    }
+
+    public void OnAddCLick(int amount)
+    {
+        currentPlayer.AvailableAmount -= amount;
+        selectedTile.Amount += amount;
+
+        selectedTile.UpdateVisual(currentPlayer);
+
+        sliderWindow.Deactivate();
+        IsClickBlocked = false;
     }
 
     private Player IsPlayerTile(HexTile tile)
