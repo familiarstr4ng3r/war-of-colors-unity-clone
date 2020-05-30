@@ -95,6 +95,8 @@ public class PlayersWindow : MonoBehaviour
             manager.AddPlayer(player);
         }
 
+        manager.Init();
+
         gameObject.SetActive(false);
     }
 }

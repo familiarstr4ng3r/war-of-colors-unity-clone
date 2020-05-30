@@ -112,7 +112,7 @@ GameObject:
   - component: {fileID: 6071343725867165837}
   - component: {fileID: 9053224409964550417}
   m_Layer: 0
-  m_Name: Hexagon
+  m_Name: '[HexTile]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -226,6 +226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 754819350be694b4ea0e3895df4c565b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Amount: 0
 --- !u!1 &6415355083370085424
 GameObject:
   m_ObjectHideFlags: 0

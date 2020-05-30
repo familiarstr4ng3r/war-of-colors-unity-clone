@@ -20,16 +20,29 @@ public class GridCreator : MonoBehaviour
     //0.88 1 world
 
     private Vector3 startPos = Vector3.zero;
-    private float screenHeight = 0;
     private HexTile[,] grid = null;
 
-    private void Start()
+    public void Create()
     {
-        screenHeight = FindObjectOfType<CanvasScaler>().referenceResolution.y;
-
         SpawnGrid(parent);
         SetNeighbours();
     }
+
+    public void SetPlayers(List<Player> players)
+    {
+        for (int i = 0, length = players.Count; i < length; i++)
+        {
+            int x = Random.Range(0, gridSize.x);
+            int y = Random.Range(0, gridSize.y);
+
+            var tile = grid[x, y];
+            tile.Amount = 2;
+
+            players[i].AddTile(tile);
+        }
+    }
+
+    //
 
     private void SpawnGrid(Transform parent)
     {

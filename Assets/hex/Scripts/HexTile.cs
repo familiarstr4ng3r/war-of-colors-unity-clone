@@ -8,14 +8,11 @@ public class HexTile : MonoBehaviour
     private TileText tileText = null;
     private List<HexTile> neighbours = new List<HexTile>();
 
+    public int Amount = 0;
+
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-    }
-
-    public void ChangeColor(Color newColor)
-    {
-        spriteRenderer.color = newColor;
     }
 
     public void SetText(TileText text)
@@ -28,7 +25,23 @@ public class HexTile : MonoBehaviour
         //neighbours = new List<HexTile>(neighbors);
         neighbours = neighbors;
 
-        tileText.UpdateText(neighbours.Count.ToString());
+        tileText.UpdateText(Amount.ToString());
+    }
+
+    public void UpdateVisual(Player p)
+    {
+        ChangeColor(p.color);
+        tileText.UpdateText(Amount.ToString());
+    }
+
+    private void ChangeColor(Color newColor)
+    {
+        spriteRenderer.color = newColor;
+    }
+
+    public bool HasNeighbour(HexTile tile)
+    {
+        return neighbours.Contains(tile);
     }
 
     private void OnDrawGizmosSelected()
