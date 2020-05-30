@@ -168,6 +168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colorImage: {fileID: 6765417776097239673}
   deleteButton: {fileID: 6765417775187223811}
+  inputField: {fileID: 6765417775873913405}
 --- !u!1 &6765417775187223813
 GameObject:
   m_ObjectHideFlags: 0

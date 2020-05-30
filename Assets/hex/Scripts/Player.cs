@@ -7,4 +7,10 @@ public class Player
 {
     public string name;
     public Color color = Color.white;
+
+    public Player(string playerName, Color imageColor)
+    {
+        name = playerName;
+        color = imageColor;
+    }
 }

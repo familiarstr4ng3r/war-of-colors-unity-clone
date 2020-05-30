@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class MovesManager : MonoBehaviour
 {
-    [SerializeField] private List<Player> players = new List<Player>();
-
     private int currentPlayerIndex = 0;
-    private Player currentPlayer = null;
+    private List<Player> players = new List<Player>();
+
+    //private Player currentPlayer = null;
 
     private void Start()
     {
-        currentPlayer = players[currentPlayerIndex];
+        //currentPlayer = players[currentPlayerIndex];
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) NextMove();
+        //if (Input.GetKeyDown(KeyCode.Space)) NextMove();
     }
 
     public void NextMove()
@@ -27,6 +27,11 @@ public class MovesManager : MonoBehaviour
         }
         else currentPlayerIndex++;
 
-        currentPlayer = players[currentPlayerIndex];
+        //currentPlayer = players[currentPlayerIndex];
+    }
+
+    public void AddPlayer(Player p)
+    {
+        players.Add(p);
     }
 }
