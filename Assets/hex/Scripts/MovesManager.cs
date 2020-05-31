@@ -19,6 +19,7 @@ public class MovesManager : MonoBehaviour
     [SerializeField] private Transform circle = null;
     [SerializeField] private NextStageButton nextStageButton = null;
     [SerializeField] private SliderWindow sliderWindow = null;
+    [SerializeField] private GridSettingsWindow gridWindow = null;
 
     private HexTile selectedTile = null;
 
@@ -38,7 +39,7 @@ public class MovesManager : MonoBehaviour
         UpdateCurrentPlayer();
 
         var grid = FindObjectOfType<GridCreator>();
-        grid.Create();
+        grid.Create(gridWindow.GridSize);
         grid.SetPlayers(players, startAmount);
 
         nextStageButton.Init(NextStage);
@@ -81,7 +82,7 @@ public class MovesManager : MonoBehaviour
 
         if (currentPlayer.IsLooser())
         {
-            Debug.Log("пропуск " + currentPlayer.name);
+            //Debug.Log("пропуск " + currentPlayer.name);
             NextPlayer();
         }
     }

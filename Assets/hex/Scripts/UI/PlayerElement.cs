@@ -16,7 +16,7 @@ public class PlayerElement : MonoBehaviour
         var window = FindObjectOfType<PlayersWindow>();
         deleteButton.onClick.AddListener(() => window.DeletePlayer(transform.GetSiblingIndex()));
 
-        inputField.onValueChanged.AddListener((text) => window.ValidateNames());
+        //inputField.onValueChanged.AddListener((text) => window.ValidateNames());
     }
 
     public void UpdateVisual(bool isLast)
@@ -24,10 +24,10 @@ public class PlayerElement : MonoBehaviour
         deleteButton.interactable = !isLast;
     }
 
-    public bool HasName()
-    {
-        return inputField.text != string.Empty;
-    }
+    //public bool HasName()
+    //{
+    //    return inputField.text != string.Empty;
+    //}
 
     public Player CreatePlayer()
     {

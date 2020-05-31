@@ -1,19 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GridCreator : MonoBehaviour
 {
-    [SerializeField] private HexTile tilePrefab = null;
+    [SerializeField] private TileProperties tile = null;
     [SerializeField] private Vector2Int gridSize = Vector2Int.one;
-    [SerializeField] private Vector2 hexSize = Vector2.zero;
-    [SerializeField] private float gap = 0;
+    [SerializeField, Range(0, 0.2f)] private float gap = 0;
     [SerializeField, Range(0, 1)] private float percentage = 0;
     [Space]
-    [SerializeField] private Transform parent = null;
+    [SerializeField] private Transform tilesParent = null;
     [SerializeField] private Transform textParent = null;
-    [SerializeField] private int size = 1;
     [SerializeField] private TileText textPrefab = null;
 
     //0.8 0.92 ui
@@ -21,33 +18,50 @@ public class GridCreator : MonoBehaviour
 
     private Vector3 startPos = Vector3.zero;
     private HexTile[,] grid = null;
+    private Vector2 hexSize = Vector2.zero;
 
-    public void Create()
+    public void Create(Vector2Int gridSize)
     {
-        SpawnGrid(parent);
+        SpawnGrid(gridSize);
         SetNeighbours();
     }
 
     public void SetPlayers(List<Player> players, int startAmount)
     {
+        int maxCount = Mathf.Min(players.Count, gridSize.x * gridSize.y);
+
+        while(players.Count > maxCount)
+        {
+            players.RemoveAt(players.Count - 1);
+        }
+
+        List<Vector2Int> positions = new List<Vector2Int>();
+        Vector2Int candidate = Vector2Int.zero;
+
         for (int i = 0, length = players.Count; i < length; i++)
         {
-            int x = Random.Range(0, gridSize.x);
-            int y = Random.Range(0, gridSize.y);
+            while(positions.Contains(candidate))
+            {
+                candidate.x = Random.Range(0, gridSize.x);
+                candidate.y = Random.Range(0, gridSize.y);
+            }
 
-            var tile = grid[x, y];
+            positions.Add(candidate);
+
+            var tile = grid[candidate.x, candidate.y];
             tile.Amount = startAmount;
-
             players[i].AddTile(tile);
         }
     }
 
     //
 
-    private void SpawnGrid(Transform parent)
+    private void SpawnGrid(Vector2Int gridSize)
     {
+        this.gridSize = gridSize;
+
+        hexSize = tile.Size;
         hexSize += hexSize * gap;
-        hexSize *= size;
 
         startPos = CalculateStartPos();
 
@@ -58,14 +72,14 @@ public class GridCreator : MonoBehaviour
             for (int x = 0; x < gridSize.x; x++)
             {
                 Vector3 pos = Convert(new Vector2Int(x, y));
-                var tile = Instantiate(tilePrefab, pos, Quaternion.identity, parent);
-                tile.name = $"Tile {x}/{y}";
+                var hexTile = Instantiate(tile.Prefab, pos, Quaternion.identity, tilesParent);
 
                 var p = Camera.main.WorldToScreenPoint(pos);
                 TileText text = Instantiate(textPrefab, p, Quaternion.identity, textParent);
-                tile.SetText(text);
+                hexTile.SetText(text);
 
-                grid[x, y] = tile;
+                hexTile.name = $"Tile {x}/{y}";
+                grid[x, y] = hexTile;
             }
         }
     }
