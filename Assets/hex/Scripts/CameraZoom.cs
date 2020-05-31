@@ -16,6 +16,7 @@ public class CameraZoom : MonoBehaviour
     {
         cam = Camera.main;
         targetZoom = cam.orthographicSize;
+        UpdateButtons();
 
         addButton.onClick.AddListener(() => ChangeZoom(1));
         substractButton.onClick.AddListener(() => ChangeZoom(-1));
@@ -23,8 +24,12 @@ public class CameraZoom : MonoBehaviour
 
     private void ChangeZoom(float value)
     {
-        //cam.orthographicSize = Mathf.Clamp(cam.orthographicSize + value, minMaxZoom.x, minMaxZoom.y);
         targetZoom += value;
+        UpdateButtons();
+    }
+
+    private void UpdateButtons()
+    {
         addButton.interactable = !Mathf.Approximately(targetZoom, minMaxZoom.y);
         substractButton.interactable = !Mathf.Approximately(targetZoom, minMaxZoom.x);
     }
