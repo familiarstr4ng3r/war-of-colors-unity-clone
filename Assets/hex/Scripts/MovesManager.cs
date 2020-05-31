@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using UnityEngine;
 
 public class MovesManager : MonoBehaviour
 {
-    public event System.Action<Player> OnEnd;
+    public event Action<Player> OnGameEnd;
+    public event Action<Player, bool> OnMoveEnd;
 
     private int currentPlayerIndex = 0;
     private List<Player> players = new List<Player>();
@@ -46,6 +48,9 @@ public class MovesManager : MonoBehaviour
 
         nextStageButton.Init(NextStage);
         nextStageButton.UpdateVisual(isFirstStage);
+
+        OnMoveEnd?.Invoke(currentPlayer, isFirstStage);
+        //Debug.Log("inited");
     }
 
     private void UpdateCurrentPlayer()
@@ -69,6 +74,8 @@ public class MovesManager : MonoBehaviour
         isFirstStage = !isFirstStage;
 
         nextStageButton.UpdateVisual(isFirstStage);
+
+        OnMoveEnd?.Invoke(currentPlayer, isFirstStage);
     }
 
     private void NextPlayer()
@@ -160,10 +167,11 @@ public class MovesManager : MonoBehaviour
 
                     clickedTile.Amount = newAmount;
                     currentPlayer.AddTile(clickedTile);
+
+                    circle.position = clickedTile.Amount > 1 ? clickedTile.transform.position : new Vector3(20, 20);
                 }
 
                 //selectedTile = null;
-                circle.position = clickedTile.Amount > 1 ? clickedTile.transform.position : new Vector3(20, 20);
 
                 CheckPlayerWin();
             }
@@ -213,9 +221,8 @@ public class MovesManager : MonoBehaviour
 
         if (winners.Length == 1)
         {
-            OnEnd?.Invoke(winners[0]);
-            //Debug.Log($"{winners[0].name} is winner");
-            //Debug.Break();
+            IsClickBlocked = true;
+            OnGameEnd?.Invoke(winners[0]);
         }
     }
 

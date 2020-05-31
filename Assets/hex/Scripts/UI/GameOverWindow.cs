@@ -22,12 +22,12 @@ public class GameOverWindow : MonoBehaviour
 
     private void OnEnable()
     {
-        movesManager.OnEnd += OnEnd;
+        movesManager.OnGameEnd += OnEnd;
     }
 
     private void OnDisable()
     {
-        movesManager.OnEnd -= OnEnd;
+        movesManager.OnGameEnd -= OnEnd;
     }
 
     private void OnEnd(Player winner)

@@ -20,6 +20,11 @@ public class HexTile : MonoBehaviour
         tileText = text;
     }
 
+    public void UpdateTextPosition(Camera cam)
+    {
+        tileText.transform.position = cam.WorldToScreenPoint(transform.position);
+    }
+
     public void SetNeighbours(List<HexTile> neighbors)
     {
         //neighbours = new List<HexTile>(neighbors);

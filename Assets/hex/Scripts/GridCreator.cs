@@ -20,8 +20,12 @@ public class GridCreator : MonoBehaviour
     private HexTile[,] grid = null;
     private Vector2 hexSize = Vector2.zero;
 
+    private Camera cam = null;
+
     public void Create(Vector2Int gridSize)
     {
+        cam = Camera.main;
+
         SpawnGrid(gridSize);
         SetNeighbours();
     }
@@ -51,6 +55,19 @@ public class GridCreator : MonoBehaviour
             var tile = grid[candidate.x, candidate.y];
             tile.Amount = startAmount;
             players[i].AddTile(tile);
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (grid == null) return;
+
+        for (int y = 0; y < gridSize.y; y++)
+        {
+            for (int x = 0; x < gridSize.x; x++)
+            {
+                grid[x, y].UpdateTextPosition(cam);
+            }
         }
     }
 

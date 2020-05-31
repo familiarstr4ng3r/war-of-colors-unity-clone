@@ -20,7 +20,8 @@ public class GridSettingsWindow : MonoBehaviour
 
     private void OnChange(string text, bool isWidth)
     {
-        if (!int.TryParse(text, out int value)) return;
+        //if (!int.TryParse(text, out int value)) return;
+        int.TryParse(text, out int value);
 
         if (isWidth) size.x = value;
         else size.y = value;

@@ -31,9 +31,8 @@ public class MenuWindow : MonoBehaviour
             manager.AddPlayer(player);
         }
 
-        manager.Init();
-
         gameplayUI.SetActive(true);
+        manager.Init();
 
         ChangeState(false);
     }
