@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class MovesManager : MonoBehaviour
 {
+    public event System.Action<Player> OnEnd;
+
     private int currentPlayerIndex = 0;
     private List<Player> players = new List<Player>();
 
@@ -211,8 +213,9 @@ public class MovesManager : MonoBehaviour
 
         if (winners.Length == 1)
         {
-            Debug.Log($"{winners[0].name} is winner");
-            Debug.Break();
+            OnEnd?.Invoke(winners[0]);
+            //Debug.Log($"{winners[0].name} is winner");
+            //Debug.Break();
         }
     }
 

@@ -9,8 +9,12 @@ public class MenuWindow : MonoBehaviour
     [SerializeField] private List<GameObject> windows = new List<GameObject>();
     [SerializeField] private GameObject gameplayUI = null;
 
+    private GameObject content = null;
+
     private void Start()
     {
+        content = transform.GetChild(0).gameObject;
+
         startButton.onClick.AddListener(StartGame);
 
         OnClick(1);
@@ -31,7 +35,12 @@ public class MenuWindow : MonoBehaviour
 
         gameplayUI.SetActive(true);
 
-        gameObject.SetActive(false);
+        ChangeState(false);
+    }
+
+    private void ChangeState(bool active)
+    {
+        content.SetActive(active);
     }
 
     public void OnClick(int index)
