@@ -24,7 +24,7 @@ public class PlayersWindow : MonoBehaviour
 
     private void PopulateWindow()
     {
-        for (int i = 0; i < playersParent.childCount - 1; i++)
+        for (int i = 0; i < playersParent.childCount; i++)
         {
             Destroy(playersParent.GetChild(i).gameObject);
         }
@@ -39,8 +39,8 @@ public class PlayersWindow : MonoBehaviour
     {
         var element = Instantiate(playerPrefab, playersParent);
 
-        int index = playersParent.childCount - 2;
-        element.transform.SetSiblingIndex(index);
+        //int index = playersParent.childCount - 2;
+        //element.transform.SetSiblingIndex(index);
 
         players.Add(element);
 
