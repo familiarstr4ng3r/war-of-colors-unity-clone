@@ -28,4 +28,9 @@ public class InputManager : MonoBehaviour
     {
 
     }
+
+    public void ChangeMode()
+    {
+        isCameraMode = !isCameraMode;
+    }
 }

@@ -60,8 +60,8 @@ namespace WOC
 
         private void HandleZooming()
         {
-            var a = Input.touches[0];
-            var b = Input.touches[1];
+            var a = Input.GetTouch(0);
+            var b = Input.GetTouch(1);
 
             var aPrev = a.position - a.deltaPosition;
             var bPrev = b.position - b.deltaPosition;

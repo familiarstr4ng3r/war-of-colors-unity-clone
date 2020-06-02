@@ -28,6 +28,17 @@ public class GridCreator : MonoBehaviour
 
         SpawnGrid(gridSize);
         SetNeighbours();
+
+        var min = Vector2.zero;
+        var max = Vector2.zero;
+
+        min.x = startPos.x;
+        min.y = -startPos.y;
+
+        max.x = -startPos.x;
+        max.y = startPos.y;
+
+        FindObjectOfType<WOC.CameraController>().Init(min, max);
     }
 
     public void SetPlayers(List<Player> players, int startAmount)
