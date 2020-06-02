@@ -37,11 +37,11 @@ public class PlayersWindow : MonoBehaviour
 
     private void AddPlayer()
     {
+        int i = players.Count;
+
         var element = Instantiate(playerPrefab, playersParent);
-
-        //int index = playersParent.childCount - 2;
-        //element.transform.SetSiblingIndex(index);
-
+        element.name = "[Player Element]: " + i;
+        element.transform.SetSiblingIndex(i);
         players.Add(element);
 
         if (players.Count >= minPlayersCount) UpdateFirst();

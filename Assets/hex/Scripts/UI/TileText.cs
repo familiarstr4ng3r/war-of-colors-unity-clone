@@ -16,4 +16,10 @@ public class TileText : MonoBehaviour
     {
         label.text = text;
     }
+
+    public void SetPosition(Vector3 position)
+    {
+        position.z = 0;
+        transform.position = position;
+    }
 }

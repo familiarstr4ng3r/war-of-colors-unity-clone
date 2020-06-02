@@ -197,6 +197,8 @@ public class MovesManager : MonoBehaviour
 
         sliderWindow.Deactivate();
         IsClickBlocked = false;
+
+        OnMoveEnd?.Invoke(currentPlayer, isFirstStage);
     }
 
     private Player IsPlayerTile(HexTile tile)

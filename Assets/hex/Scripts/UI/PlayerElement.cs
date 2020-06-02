@@ -24,6 +24,11 @@ public class PlayerElement : MonoBehaviour
         deleteButton.interactable = !isLast;
     }
 
+    public void SetColor(Color newColor)
+    {
+        colorImage.color = newColor;
+    }
+
     //public bool HasName()
     //{
     //    return inputField.text != string.Empty;

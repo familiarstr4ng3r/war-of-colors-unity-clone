@@ -22,7 +22,8 @@ public class HexTile : MonoBehaviour
 
     public void UpdateTextPosition(Camera cam)
     {
-        tileText.transform.position = cam.WorldToScreenPoint(transform.position);
+        var pos = cam.WorldToScreenPoint(transform.position);
+        tileText.SetPosition(pos);
     }
 
     public void SetNeighbours(List<HexTile> neighbors)

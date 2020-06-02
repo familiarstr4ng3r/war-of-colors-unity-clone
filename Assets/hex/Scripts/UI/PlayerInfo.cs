@@ -27,6 +27,7 @@ public class PlayerInfo : MonoBehaviour
     private void OnMoveEnd(Player player, bool isFirstStage)
     {
         string t = isFirstStage ? "Фаза атаки" : "Фаза пополнения";
-        label.text = $"{t} - сейчас ходит {player.name}";
+        string t1 = isFirstStage ? string.Empty : $"Войск в наличии - {player.AvailableAmount}";
+        label.text = $"{t} - сейчас ходит {player.name} {t1}";
     }
 }
