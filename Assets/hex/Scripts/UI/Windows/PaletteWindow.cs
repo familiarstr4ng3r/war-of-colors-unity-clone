@@ -1,12 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PaletteWindow : MonoBehaviour
 {
     [SerializeField] private GameObject content = null;
-    [SerializeField] private Button closeButton = null;
     [SerializeField] private Transform elementsParent = null;
     [SerializeField] private PaletteElementButton elementPrefab = null;
     [SerializeField] private Color[] colors = null;
@@ -19,8 +17,6 @@ public class PaletteWindow : MonoBehaviour
         playersWindow = FindObjectOfType<PlayersWindow>();
 
         PopulateButtons();
-
-        closeButton.onClick.AddListener(() => SetState(false));
 
         SetState(false);
     }
@@ -44,7 +40,7 @@ public class PaletteWindow : MonoBehaviour
             element.OnClick = () => OnColorClick(k);
         }
 
-        Canvas.ForceUpdateCanvases();
+        //Canvas.ForceUpdateCanvases();
     }
 
     public void OnPlayerClick(int _playerIndex)
@@ -58,6 +54,8 @@ public class PaletteWindow : MonoBehaviour
         var playerElement = playersWindow.Players[playerIndex];
         var newColor = colors[colorIndex];
         playerElement.SetColor(newColor);
+
+        SetState(false);
         //Debug.Log(colorIndex);
     }
 

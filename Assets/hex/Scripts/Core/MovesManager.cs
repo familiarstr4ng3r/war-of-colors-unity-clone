@@ -20,7 +20,7 @@ public class MovesManager : MonoBehaviour
     private int lap = 0;
 
     [SerializeField] private int startAmount = 10;
-    [SerializeField] private Transform circle = null;
+    //[SerializeField] private Transform circle = null;
     [SerializeField] private NextStageButton nextStageButton = null;
     [SerializeField] private SliderWindow sliderWindow = null;
     [SerializeField] private GridSettingsWindow gridWindow = null;
@@ -128,7 +128,7 @@ public class MovesManager : MonoBehaviour
         {
             selectedTile = clickedTile;
 
-            if (selectedTile.Amount > 1) circle.position = selectedTile.transform.position;
+            //if (selectedTile.Amount > 1) circle.position = selectedTile.transform.position;
         }
         else
         {
@@ -155,6 +155,8 @@ public class MovesManager : MonoBehaviour
 
                         selectedTile.Amount = 1;
                         selectedTile.UpdateVisual(currentPlayer);
+
+                        selectedTile = clickedTile;
                     }
                 }
                 else
@@ -168,10 +170,11 @@ public class MovesManager : MonoBehaviour
                     clickedTile.Amount = newAmount;
                     currentPlayer.AddTile(clickedTile);
 
-                    circle.position = clickedTile.Amount > 1 ? clickedTile.transform.position : new Vector3(20, 20);
+                    selectedTile = clickedTile;
+
+                    //circle.position = clickedTile.Amount > 1 ? clickedTile.transform.position : new Vector3(20, 20);
                 }
 
-                //selectedTile = null;
 
                 CheckPlayerWin();
             }
@@ -246,6 +249,10 @@ public class MovesManager : MonoBehaviour
             string text = players[i].ToString();
             GUI.Label(rect, text);
         }
+
+        GUI.color = Color.white;
+        rect.y += 30;
+        GUI.Toggle(rect, selectedTile != null, " - Has selected tile");
 
         GUI.color = old;
     }

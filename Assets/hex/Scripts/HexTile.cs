@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class HexTile : MonoBehaviour
 {
+    [SerializeField] private Color defaultColor = Color.white;
+
     private SpriteRenderer spriteRenderer = null;
     private TileText tileText = null;
     private List<HexTile> neighbours = new List<HexTile>();
@@ -13,6 +15,8 @@ public class HexTile : MonoBehaviour
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        ChangeColor(defaultColor);
     }
 
     public void SetText(TileText text)
@@ -36,7 +40,7 @@ public class HexTile : MonoBehaviour
 
     public void UpdateVisual(Player p)
     {
-        Color c = p != null ? p.color : Color.white;
+        Color c = p != null ? p.color : defaultColor;
         ChangeColor(c);
         tileText.UpdateText(Amount.ToString());
     }
