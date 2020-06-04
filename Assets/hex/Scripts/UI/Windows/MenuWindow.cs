@@ -27,7 +27,7 @@ public class MenuWindow : MonoBehaviour
 
         for (int i = 0, length = players.Count; i < length; i++)
         {
-            var player = players[i].CreatePlayer();
+            var player = players[i].CreatePlayer(i);
             manager.AddPlayer(player);
         }
 

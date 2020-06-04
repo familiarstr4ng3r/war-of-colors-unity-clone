@@ -34,7 +34,7 @@ public class GameOverWindow : MonoBehaviour
     {
         ChangeState(true);
 
-        label.text = $"Победил {winner.name}!";
+        label.text = $"Победил {winner.Name}!";
     }
 
     private void ChangeState(bool active)

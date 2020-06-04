@@ -29,8 +29,8 @@ public class PlayerInfo : MonoBehaviour
     {
         string t = isFirstStage ? "Фаза атаки" : "Фаза пополнения";
         string t1 = isFirstStage ? string.Empty : $"Войск в наличии - {player.AvailableAmount}";
-        label.text = $"{t} - сейчас ходит {player.name} {t1}";
+        label.text = $"{t} - сейчас ходит {player.Name} {t1}";
 
-        backgroundImage.color = player.color;
+        backgroundImage.color = player.Color;
     }
 }

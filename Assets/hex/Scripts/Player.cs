@@ -5,50 +5,37 @@ using UnityEngine;
 [System.Serializable]
 public class Player
 {
-    public string name;
-    public Color color = Color.white;
+    public string Name;
+    public Color Color = Color.white;
     public int AvailableAmount = 0;
+    public int Index = 0;
+    public int TilesCount = 0;
 
-    private List<HexTile> tiles = new List<HexTile>();
-
-    public Player(string playerName, Color imageColor)
+    public Player(string playerName, Color imageColor, int index)
     {
-        name = playerName;
-        color = imageColor;
-    }
-
-    public void AddTile(HexTile tile)
-    {
-        tile.UpdateVisual(this);
-
-        tiles.Add(tile);
-    }
-
-    public void RemoveTile(HexTile tile)
-    {
-        tile.UpdateVisual(null);
-
-        tiles.Remove(tile);
+        Name = playerName;
+        Color = imageColor;
+        Index = index;
     }
 
     public bool HasTile(HexTile tile)
     {
-        return tiles.Contains(tile);
+        return Index == tile.Data.PlayerIndex;
     }
 
     public bool IsLooser()
     {
-        return tiles.Count == 0;
+        return TilesCount == 0;
     }
 
     public void OnSecondStage()
     {
-        AvailableAmount += tiles.Count;
+        AvailableAmount += TilesCount;
     }
 
     public override string ToString()
     {
-        string t = IsLooser() ? "is looser" : "has " + tiles.Count + " tiles";
-        return $"{name} {t}";
+        string t = IsLooser() ? "is looser" : "has " + TilesCount + " tiles";
+        return $"{Name} {t}";
     }
 }

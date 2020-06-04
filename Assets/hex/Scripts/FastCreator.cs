@@ -12,7 +12,7 @@ public class FastCreator : MonoBehaviour
 
         for (int i = 0; i < playersCount; i++)
         {
-            manager.AddPlayer(new Player(i.ToString(), Random.ColorHSV()));
+            manager.AddPlayer(new Player(i.ToString(), Random.ColorHSV(), i));
         }
         
         manager.Init();

@@ -64,8 +64,11 @@ public class GridCreator : MonoBehaviour
             positions.Add(candidate);
 
             var tile = grid[candidate.x, candidate.y];
+
+            tile.Player = players[i];
             tile.Amount = startAmount;
-            players[i].AddTile(tile);
+
+            players[i].TilesCount++;
         }
     }
 

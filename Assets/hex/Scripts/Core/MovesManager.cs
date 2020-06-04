@@ -132,41 +132,57 @@ public class MovesManager : MonoBehaviour
         }
         else
         {
-            if (selectedTile && selectedTile.Amount > 1 && selectedTile.HasNeighbour(clickedTile))
-            {
-                //to do: check for enemy
+            if (!selectedTile) return;
 
-                //clicked is new
-                var enemy = IsPlayerTile(clickedTile);
-                
-                if (enemy != null)
+            if (selectedTile.Amount > 1 && selectedTile.HasNeighbour(clickedTile))
+            {
+                bool isEnemyTile = !clickedTile.IsEmpty() && currentPlayer.Index != clickedTile.Data.PlayerIndex;
+
+                if (isEnemyTile)
                 {
-                    //tile is enemy
+                    var enemy = players[clickedTile.Data.PlayerIndex];
 
                     if (selectedTile.Amount > clickedTile.Amount)
                     {
-                        //100% win
-                        enemy.RemoveTile(clickedTile);
-
                         int difference = selectedTile.Amount - clickedTile.Amount;
+                        clickedTile.Player = currentPlayer;
                         clickedTile.Amount = difference;
 
-                        currentPlayer.AddTile(clickedTile);
-
                         selectedTile.Amount = 1;
-                        selectedTile.UpdateVisual(currentPlayer);
+
+                        currentPlayer.TilesCount++;
+                        enemy.TilesCount--;
 
                         selectedTile = clickedTile;
                     }
                     else if (selectedTile.Amount == clickedTile.Amount)
                     {
-                        currentPlayer.RemoveTile(selectedTile);
-                        selectedTile.Amount = 0;
-                        selectedTile.UpdateVisual(null);
+                        bool attackerWin = UnityEngine.Random.Range(0, 2) == 0;
 
-                        enemy.RemoveTile(clickedTile);
-                        clickedTile.Amount = 0;
-                        clickedTile.UpdateVisual(null);
+                        if (attackerWin)
+                        {
+                            enemy.TilesCount--;
+
+                            //selectedTile.Player = null;
+                            selectedTile.Amount = 1;
+
+                            clickedTile.Player = currentPlayer;
+                            clickedTile.Amount = 1;
+
+                            currentPlayer.TilesCount++;
+                        }
+                        else
+                        {
+                            enemy.TilesCount++;
+
+                            selectedTile.Player = enemy;
+                            selectedTile.Amount = 1;
+
+                            //clickedTile.Player = currentPlayer;
+                            clickedTile.Amount = 1;
+
+                            currentPlayer.TilesCount--;
+                        }
 
                         selectedTile = null;
                     }
@@ -174,28 +190,26 @@ public class MovesManager : MonoBehaviour
                     {
                         int difference = Mathf.Abs(selectedTile.Amount - clickedTile.Amount);
                         
-                        currentPlayer.RemoveTile(selectedTile);
                         selectedTile.Amount = 0;
-                        selectedTile.UpdateVisual(null);
+                        selectedTile.Player = null;
 
                         clickedTile.Amount = difference;
-                        clickedTile.UpdateVisual(enemy);
 
                         selectedTile = null;
+
+                        currentPlayer.TilesCount--;
                     }
                 }
                 else
                 {
-                    //tile is empty
                     int newAmount = selectedTile.Amount - 1;
 
-                    selectedTile.Amount = 1;
-                    selectedTile.UpdateVisual(currentPlayer);
-
+                    clickedTile.Player = currentPlayer;
                     clickedTile.Amount = newAmount;
-                    currentPlayer.AddTile(clickedTile);
 
+                    selectedTile.Amount = 1;
                     selectedTile = clickedTile;
+                    currentPlayer.TilesCount++;
 
                     //circle.position = clickedTile.Amount > 1 ? clickedTile.transform.position : new Vector3(20, 20);
                 }
@@ -221,7 +235,7 @@ public class MovesManager : MonoBehaviour
         currentPlayer.AvailableAmount -= amount;
         selectedTile.Amount += amount;
 
-        selectedTile.UpdateVisual(currentPlayer);
+        //selectedTile.UpdateVisual(currentPlayer);
 
         sliderWindow.Deactivate();
         IsClickBlocked = false;
@@ -265,12 +279,16 @@ public class MovesManager : MonoBehaviour
 
         var rect = new Rect(10, 10, 500, 30);
 
-        GUI.Label(rect, currentPlayer.name);
+        GUI.Label(rect, currentPlayer.Name);
 
         for (int i = 0; i < players.Count; i++)
         {
-            GUI.color = players[i].color;
             rect.y += 30;
+
+            //GUI.color = players[i].Color;
+            //GUI.Label(rect, "III");
+            //GUI.color = Color.white;
+
             string text = players[i].ToString();
             GUI.Label(rect, text);
         }
