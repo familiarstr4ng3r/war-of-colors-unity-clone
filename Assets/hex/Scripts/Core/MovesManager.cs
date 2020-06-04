@@ -158,6 +158,31 @@ public class MovesManager : MonoBehaviour
 
                         selectedTile = clickedTile;
                     }
+                    else if (selectedTile.Amount == clickedTile.Amount)
+                    {
+                        currentPlayer.RemoveTile(selectedTile);
+                        selectedTile.Amount = 0;
+                        selectedTile.UpdateVisual(null);
+
+                        enemy.RemoveTile(clickedTile);
+                        clickedTile.Amount = 0;
+                        clickedTile.UpdateVisual(null);
+
+                        selectedTile = null;
+                    }
+                    else if (selectedTile.Amount < clickedTile.Amount)
+                    {
+                        int difference = Mathf.Abs(selectedTile.Amount - clickedTile.Amount);
+                        
+                        currentPlayer.RemoveTile(selectedTile);
+                        selectedTile.Amount = 0;
+                        selectedTile.UpdateVisual(null);
+
+                        clickedTile.Amount = difference;
+                        clickedTile.UpdateVisual(enemy);
+
+                        selectedTile = null;
+                    }
                 }
                 else
                 {
