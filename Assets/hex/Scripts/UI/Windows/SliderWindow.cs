@@ -35,13 +35,15 @@ namespace WOC
             UpdateLabel();
 
             go.SetActive(true);
+
+            MovesManager.IsClickBlocked = true;
         }
 
         public void Deactivate()
         {
             go.SetActive(false);
 
-            MovesManager.IsClickBlocked = false;
+            this.CallWithDelay(() => MovesManager.IsClickBlocked = false, 0.2f);// looks like КоСтЫлЬ
         }
 
         private void OnValueChange()

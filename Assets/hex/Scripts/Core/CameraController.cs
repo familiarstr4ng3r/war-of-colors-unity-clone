@@ -83,6 +83,8 @@ namespace WOC
 
             targetZoom -= difference * 0.01f;
             targetZoom = Mathf.Clamp(targetZoom, minMaxZoom.x, minMaxZoom.y);
+
+            isDragging = false;
         }
 
         private void HandleDragging()

@@ -64,13 +64,6 @@ public class HexTile : MonoBehaviour
         UpdateVisual();
     }
 
-    //public void UpdateVisual(Player p)
-    //{
-    //    Color c = p != null ? p.Color : defaultColor;
-    //    ChangeColor(c);
-    //    tileText.UpdateText(Amount.ToString());
-    //}
-
     private void ChangeColor(Color newColor)
     {
         spriteRenderer.color = newColor;
@@ -81,21 +74,9 @@ public class HexTile : MonoBehaviour
         return neighbours.Contains(tile);
     }
 
-    //private void OnDrawGizmosSelected()
-    //{
-    //    Gizmos.color = Color.red;
-
-    //    for (int i = 0, length = neighbours.Count; i < length; i++)
-    //    {
-    //        Gizmos.DrawLine(transform.position, neighbours[i].transform.position);
-    //    }
-
-    //    Gizmos.DrawWireSphere(transform.position, 0.1f);
-    //}
-
     public bool IsEmpty()
     {
-        return Player == null;// || tileData.PlayerIndex == -1 || Amount == 0;
+        return Player == null;
     }
 
     private void UpdateVisual()
@@ -105,6 +86,23 @@ public class HexTile : MonoBehaviour
         tileText.UpdateText(Amount.ToString());
 
         tileData.PlayerIndex = IsEmpty() ? -1 : player.Index;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        //DrawNeighbours();
+    }
+
+    private void DrawNeighbours()
+    {
+        Gizmos.color = Color.red;
+
+        for (int i = 0, length = neighbours.Count; i < length; i++)
+        {
+            Gizmos.DrawLine(transform.position, neighbours[i].transform.position);
+        }
+
+        Gizmos.DrawWireSphere(transform.position, 0.1f);
     }
 }
 

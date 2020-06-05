@@ -255,7 +255,6 @@ namespace WOC
             {
                 selectedTile = clickedTile;
                 sliderWindow.Activate(currentPlayer.AvailableAmount);
-                IsClickBlocked = true;
             }
         }
 
@@ -264,28 +263,8 @@ namespace WOC
             currentPlayer.AvailableAmount -= amount;
             selectedTile.Amount += amount;
 
-            //selectedTile.UpdateVisual(currentPlayer);
-
             sliderWindow.Deactivate();
-            IsClickBlocked = false;
-
             OnMoveEnd?.Invoke(currentPlayer, isFirstStage, players, grid);
-        }
-
-        private Player IsPlayerTile(HexTile tile)
-        {
-            Player player = null;
-
-            for (int i = 0, length = players.Count; i < length; i++)
-            {
-                if (players[i].HasTile(tile))
-                {
-                    player = players[i];
-                    break;
-                }
-            }
-
-            return player;
         }
 
         private void CheckPlayerWin()
@@ -298,6 +277,8 @@ namespace WOC
                 OnGameEnd?.Invoke(winners[0]);
             }
         }
+
+        //
 
         private void OnGUI()
         {
