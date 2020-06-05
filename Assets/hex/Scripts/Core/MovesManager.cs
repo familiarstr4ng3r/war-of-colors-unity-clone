@@ -22,8 +22,8 @@ namespace WOC
         private int lap = 0;
 
         private float dragTimer = 0;
-        private float dragTimeThreshold = 0.2f;
-        private float dragDistanceThreshold = 25;//pixels
+        [SerializeField] private float dragTimeThreshold = 1;//задержка удержания в секундах
+        private float dragDistanceThreshold = 25;//задержка дистанции в пикселях (играет маленькую роль)
 
         private bool isDragging = false;
         private Vector3 clickedPos = Vector3.zero;
@@ -374,7 +374,7 @@ namespace WOC
             }
         }
 
-        //
+#if UNITY_EDITOR
 
         private void OnGUI()
         {
@@ -405,5 +405,7 @@ namespace WOC
 
             GUI.color = old;
         }
+
+#endif
     }
 }

@@ -6016,6 +6016,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointer: {fileID: 1103067716}
+  dragTimeThreshold: 1
 --- !u!4 &1586617336
 Transform:
   m_ObjectHideFlags: 0

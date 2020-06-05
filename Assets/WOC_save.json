@@ -1,0 +1,70 @@
+{
+    "Width": 3,
+    "Height": 3,
+    "IsFirstStage": true,
+    "CurrentPlayerIndex": 0,
+    "Players": [
+        {
+            "Name": "йцу",
+            "Color": {
+                "r": 1.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "AvailableAmount": 0,
+            "Index": 0,
+            "TilesCount": 2
+        },
+        {
+            "Name": "фыв",
+            "Color": {
+                "r": 0.0,
+                "g": 1.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "AvailableAmount": 0,
+            "Index": 1,
+            "TilesCount": 1
+        }
+    ],
+    "Tiles": [
+        {
+            "Amount": 1,
+            "PlayerIndex": 0
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 1,
+            "PlayerIndex": 0
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 2,
+            "PlayerIndex": 1
+        }
+    ]
+}
