@@ -1,65 +1,37 @@
 {
     "Width": 5,
-    "Height": 3,
+    "Height": 5,
     "IsFirstStage": true,
-    "CurrentPlayerIndex": 1,
+    "CurrentPlayerIndex": 0,
     "Players": [
         {
-            "Name": "red player",
+            "Name": "qwe",
             "Color": {
                 "r": 1.0,
                 "g": 0.0,
-                "b": 0.0,
+                "b": 1.0,
                 "a": 1.0
             },
             "AvailableAmount": 0,
             "Index": 0,
-            "TilesCount": 10
+            "TilesCount": 1
         },
         {
-            "Name": "yellow player",
+            "Name": "asd",
             "Color": {
-                "r": 1.0,
-                "g": 1.0,
-                "b": 0.0,
+                "r": 0.0,
+                "g": 0.0,
+                "b": 1.0,
                 "a": 1.0
             },
-            "AvailableAmount": 6,
+            "AvailableAmount": 0,
             "Index": 1,
-            "TilesCount": 3
+            "TilesCount": 1
         }
     ],
     "Tiles": [
         {
-            "Amount": 1,
-            "PlayerIndex": 0
-        },
-        {
-            "Amount": 22,
-            "PlayerIndex": 0
-        },
-        {
-            "Amount": 1,
-            "PlayerIndex": 0
-        },
-        {
-            "Amount": 2,
-            "PlayerIndex": 0
-        },
-        {
-            "Amount": 1,
-            "PlayerIndex": 1
-        },
-        {
-            "Amount": 12,
-            "PlayerIndex": 0
-        },
-        {
-            "Amount": 1,
-            "PlayerIndex": 0
-        },
-        {
-            "Amount": 1,
+            "Amount": 20,
             "PlayerIndex": 0
         },
         {
@@ -67,28 +39,96 @@
             "PlayerIndex": -1
         },
         {
-            "Amount": 1,
-            "PlayerIndex": 1
-        },
-        {
-            "Amount": 1,
-            "PlayerIndex": 0
-        },
-        {
-            "Amount": 1,
-            "PlayerIndex": 0
-        },
-        {
-            "Amount": 1,
-            "PlayerIndex": 0
+            "Amount": 0,
+            "PlayerIndex": -1
         },
         {
             "Amount": 0,
             "PlayerIndex": -1
         },
         {
-            "Amount": 18,
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 20,
             "PlayerIndex": 1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
         }
     ]
 }

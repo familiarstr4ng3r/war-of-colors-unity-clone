@@ -11,6 +11,9 @@ namespace WOC
         public event Action<Player> OnGameEnd;
         public event Action<Player, bool, List<Player>, GridCreator> OnMoveEnd;
 
+        //[SerializeField] private Transform circle = null;
+        private SliderWindow sliderWindow = null;
+
         private int currentPlayerIndex = 0;
         private Player currentPlayer = null;
         private List<Player> players = new List<Player>();
@@ -19,17 +22,19 @@ namespace WOC
         private bool isFirstStage = true;
         private int lap = 0;
 
-        [SerializeField] private int startAmount = 10;
-        //[SerializeField] private Transform circle = null;
-        [SerializeField] private NextStageButton nextStageButton = null;
-        [SerializeField] private SliderWindow sliderWindow = null;
-
         private HexTile selectedTile = null;
 
         public static bool IsClickBlocked = false;
 
         private GridCreator grid = null;
         private CameraController cameraController = null;
+
+        private void Awake()
+        {
+            cameraController = FindObjectOfType<CameraController>();
+            sliderWindow = FindObjectOfType<SliderWindow>();
+            grid = FindObjectOfType<GridCreator>();
+        }
 
         private void Update()
         {
@@ -38,28 +43,19 @@ namespace WOC
 
         public void Init()
         {
-            cameraController = FindObjectOfType<CameraController>();
-
             isGameStarted = true;
             IsClickBlocked = false;
 
             UpdateCurrentPlayer();
 
-            grid = FindObjectOfType<GridCreator>();
             grid.Create();
-            grid.SetPlayers(players, startAmount);
-
-            nextStageButton.Init(NextStage);
-            nextStageButton.UpdateVisual(isFirstStage);
+            grid.SetPlayers(players);
 
             OnMoveEnd?.Invoke(currentPlayer, isFirstStage, players, grid);
-            //Debug.Log("inited");
         }
 
         public void Load(SaveData data)
         {
-            cameraController = FindObjectOfType<CameraController>();
-
             isGameStarted = true;
             IsClickBlocked = false;
 
@@ -69,15 +65,11 @@ namespace WOC
             players = new List<Player>(data.Players);
             UpdateCurrentPlayer();
 
-            grid = FindObjectOfType<GridCreator>();
             grid.Width = data.Width;
             grid.Height = data.Height;
 
             grid.Create();
             grid.Load(data);
-
-            nextStageButton.Init(NextStage);
-            nextStageButton.UpdateVisual(isFirstStage);
 
             OnMoveEnd?.Invoke(currentPlayer, isFirstStage, players, grid);
         }
@@ -87,7 +79,7 @@ namespace WOC
             currentPlayer = players[currentPlayerIndex];
         }
 
-        private void NextStage()
+        public void NextStage()
         {
             selectedTile = null;
 
@@ -101,8 +93,6 @@ namespace WOC
             }
 
             isFirstStage = !isFirstStage;
-
-            nextStageButton.UpdateVisual(isFirstStage);
 
             OnMoveEnd?.Invoke(currentPlayer, isFirstStage, players, grid);
         }

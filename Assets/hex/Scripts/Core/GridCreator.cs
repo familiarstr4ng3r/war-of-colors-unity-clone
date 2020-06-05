@@ -10,6 +10,7 @@ namespace WOC
         public int Height = 0;
         public HexTile[,] Grid => grid;
 
+        [SerializeField] private int startAmount = 20;
         [SerializeField] private GridProperties gridProperties = null;
         [SerializeField] private Transform textParent = null;
         [SerializeField] private TileText textPrefab = null;
@@ -30,7 +31,7 @@ namespace WOC
             cameraController.Init(startPos, -startPos);
         }
 
-        public void SetPlayers(List<Player> players, int startAmount)
+        public void SetPlayers(List<Player> players)
         {
             //prevent max players count (fool-proof)
 

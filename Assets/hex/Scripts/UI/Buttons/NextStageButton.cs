@@ -3,20 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NextStageButton : MonoBehaviour
+namespace WOC
 {
-    [SerializeField] private Text label = null;
-
-    private Button button = null;
-
-    public void Init(UnityEngine.Events.UnityAction call)
+    public class NextStageButton : MonoBehaviour
     {
-        button = GetComponent<Button>();
-        button.onClick.AddListener(call);
-    }
+        [SerializeField] private Text label = null;
 
-    public void UpdateVisual(bool isFirstStage)
-    {
-        label.text = isFirstStage ? "Завершить ход" : "Расставьте армии";
+        private Button button = null;
+        private MovesManager movesManager = null;
+
+        private void Awake()
+        {
+            button = GetComponent<Button>();
+            movesManager = FindObjectOfType<MovesManager>();
+            button.onClick.AddListener(movesManager.NextStage);
+        }
+
+        private void OnEnable()
+        {
+            movesManager.OnMoveEnd += OnMoveEnd;
+        }
+
+        private void OnDisable()
+        {
+            movesManager.OnMoveEnd -= OnMoveEnd;
+        }
+
+        private void OnMoveEnd(Player currentPlayer, bool isFirstStage, List<Player> players, GridCreator grid)
+        {
+            label.text = isFirstStage ? "Завершить ход" : "Расставьте армии";
+        }
     }
 }
