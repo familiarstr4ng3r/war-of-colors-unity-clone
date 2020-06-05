@@ -27,7 +27,7 @@ namespace WOC
             movesManager.OnMoveEnd -= OnMoveEnd;
         }
 
-        private void OnMoveEnd(Player player, bool isFirstStage)
+        private void OnMoveEnd(Player player, bool isFirstStage, List<Player> players, GridCreator grid)
         {
             string t = isFirstStage ? "Фаза атаки" : "Фаза пополнения";
             string t1 = isFirstStage ? string.Empty : $"Войск в наличии - {player.AvailableAmount}";

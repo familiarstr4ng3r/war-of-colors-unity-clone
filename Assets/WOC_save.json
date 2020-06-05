@@ -1,0 +1,94 @@
+{
+    "Width": 5,
+    "Height": 3,
+    "IsFirstStage": false,
+    "CurrentPlayerIndex": 1,
+    "Players": [
+        {
+            "Name": "",
+            "Color": {
+                "r": 1.0,
+                "g": 0.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "AvailableAmount": 4,
+            "Index": 0,
+            "TilesCount": 4
+        },
+        {
+            "Name": "",
+            "Color": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 0.0,
+                "a": 1.0
+            },
+            "AvailableAmount": 3,
+            "Index": 1,
+            "TilesCount": 3
+        }
+    ],
+    "Tiles": [
+        {
+            "Amount": 1,
+            "PlayerIndex": 0
+        },
+        {
+            "Amount": 1,
+            "PlayerIndex": 0
+        },
+        {
+            "Amount": 1,
+            "PlayerIndex": 0
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 1,
+            "PlayerIndex": 1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 17,
+            "PlayerIndex": 0
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 1,
+            "PlayerIndex": 1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 0,
+            "PlayerIndex": -1
+        },
+        {
+            "Amount": 18,
+            "PlayerIndex": 1
+        }
+    ]
+}

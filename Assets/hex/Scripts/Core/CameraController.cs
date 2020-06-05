@@ -11,7 +11,6 @@ namespace WOC
         [SerializeField] private Vector2 minMaxZoom = new Vector2();
 
         private bool isDragging = false;
-        private Camera cam = null;
         private Plane plane = new Plane(Vector3.back, Vector3.zero);
 
         private Vector3 clickedPosition = Vector3.zero;
@@ -26,13 +25,22 @@ namespace WOC
 
         private float targetZoom = 0;
 
-        public Camera Camera => cam;
+        private Camera cam = null;
+
+        public Camera Camera
+        {
+            get
+            {
+                if (cam == null) cam = Camera.main;
+
+                return cam;
+            }
+        }
 
         private void Start()
         {
-            cam = Camera.main;
-            targetZoom = cam.orthographicSize;
-            startZ = cam.transform.position.z;
+            targetZoom = Camera.orthographicSize;
+            startZ = Camera.transform.position.z;
         }
 
         private void FixedUpdate()
@@ -83,7 +91,7 @@ namespace WOC
             {
                 isDragging = true;
 
-                Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+                Ray ray = Camera.ScreenPointToRay(Input.mousePosition);
                 if (plane.Raycast(ray, out var enter)) clickedPosition = ray.GetPoint(enter);
             }
             else if (Input.GetKeyUp(KeyCode.Mouse0))
@@ -93,7 +101,7 @@ namespace WOC
 
             if (isDragging)
             {
-                Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+                Ray ray = Camera.ScreenPointToRay(Input.mousePosition);
                 if (plane.Raycast(ray, out var enter))
                 {
                     draggingPosition = ray.GetPoint(enter);
@@ -110,7 +118,7 @@ namespace WOC
             finalPosition.y = Mathf.Clamp(finalPosition.y, minPosition.y, maxPosition.y);
             transform.position = finalPosition;
 
-            cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, targetZoom, zoomSpeed);
+            Camera.orthographicSize = Mathf.Lerp(Camera.orthographicSize, targetZoom, zoomSpeed);
         }
     }
 }

@@ -8,6 +8,7 @@ namespace WOC
     {
         public int Width = 0;
         public int Height = 0;
+        public HexTile[,] Grid => grid;
 
         [SerializeField] private GridProperties gridProperties = null;
         [SerializeField] private Transform textParent = null;
@@ -61,6 +62,23 @@ namespace WOC
                 tile.Amount = startAmount;
 
                 players[i].TilesCount++;
+            }
+        }
+
+        public void Load(SaveData saveData)
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    int index = y * Width + x;
+                    
+                    var data = saveData.Tiles[index];
+                    bool hasPlayer = data.PlayerIndex != -1;
+
+                    grid[x, y].Player = hasPlayer ? saveData.Players[data.PlayerIndex] : null;
+                    grid[x, y].Amount = data.Amount;
+                }
             }
         }
 

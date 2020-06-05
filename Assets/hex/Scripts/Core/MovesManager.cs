@@ -9,13 +9,11 @@ namespace WOC
     public class MovesManager : MonoBehaviour
     {
         public event Action<Player> OnGameEnd;
-        public event Action<Player, bool> OnMoveEnd;
+        public event Action<Player, bool, List<Player>, GridCreator> OnMoveEnd;
 
         private int currentPlayerIndex = 0;
-        private List<Player> players = new List<Player>();
-
         private Player currentPlayer = null;
-        private Camera cam = null;
+        private List<Player> players = new List<Player>();
 
         private bool isGameStarted = false;
         private bool isFirstStage = true;
@@ -30,6 +28,9 @@ namespace WOC
 
         public static bool IsClickBlocked = false;
 
+        private GridCreator grid = null;
+        private CameraController cameraController = null;
+
         private void Update()
         {
             HandleInput();
@@ -37,21 +38,48 @@ namespace WOC
 
         public void Init()
         {
-            cam = Camera.main;
+            cameraController = FindObjectOfType<CameraController>();
+
             isGameStarted = true;
             IsClickBlocked = false;
 
             UpdateCurrentPlayer();
 
-            var grid = FindObjectOfType<GridCreator>();
+            grid = FindObjectOfType<GridCreator>();
             grid.Create();
             grid.SetPlayers(players, startAmount);
 
             nextStageButton.Init(NextStage);
             nextStageButton.UpdateVisual(isFirstStage);
 
-            OnMoveEnd?.Invoke(currentPlayer, isFirstStage);
+            OnMoveEnd?.Invoke(currentPlayer, isFirstStage, players, grid);
             //Debug.Log("inited");
+        }
+
+        public void Load(SaveData data)
+        {
+            cameraController = FindObjectOfType<CameraController>();
+
+            isGameStarted = true;
+            IsClickBlocked = false;
+
+            isFirstStage = data.IsFirstStage;
+            currentPlayerIndex = data.CurrentPlayerIndex;
+
+            players = new List<Player>(data.Players);
+            UpdateCurrentPlayer();
+
+            grid = FindObjectOfType<GridCreator>();
+            grid.Width = data.Width;
+            grid.Height = data.Height;
+
+            grid.Create();
+            grid.Load(data);
+
+            nextStageButton.Init(NextStage);
+            nextStageButton.UpdateVisual(isFirstStage);
+
+            OnMoveEnd?.Invoke(currentPlayer, isFirstStage, players, grid);
         }
 
         private void UpdateCurrentPlayer()
@@ -76,7 +104,7 @@ namespace WOC
 
             nextStageButton.UpdateVisual(isFirstStage);
 
-            OnMoveEnd?.Invoke(currentPlayer, isFirstStage);
+            OnMoveEnd?.Invoke(currentPlayer, isFirstStage, players, grid);
         }
 
         private void NextPlayer()
@@ -108,7 +136,7 @@ namespace WOC
             {
                 if (IsClickBlocked) return;
 
-                Vector3 worldPos = cam.ScreenToWorldPoint(Input.mousePosition);
+                Vector3 worldPos = cameraController.Camera.ScreenToWorldPoint(Input.mousePosition);
                 RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector3.forward);
 
                 if (hit.collider)
@@ -241,7 +269,7 @@ namespace WOC
             sliderWindow.Deactivate();
             IsClickBlocked = false;
 
-            OnMoveEnd?.Invoke(currentPlayer, isFirstStage);
+            OnMoveEnd?.Invoke(currentPlayer, isFirstStage, players, grid);
         }
 
         private Player IsPlayerTile(HexTile tile)

@@ -7,6 +7,8 @@ namespace WOC
 {
     public class SaveManager : MonoBehaviour
     {
+        [SerializeField] private bool loadAtStart = false;
+
         private MovesManager movesManager = null;
 
         private string savePath = string.Empty;
@@ -17,6 +19,11 @@ namespace WOC
             movesManager = FindObjectOfType<MovesManager>();
 
             savePath = Path.Combine(Application.isEditor ? Application.dataPath : Application.persistentDataPath, fileName);
+        }
+
+        private void Start()
+        {
+            if (loadAtStart) Load();
         }
 
         private void OnEnable()
@@ -31,9 +38,9 @@ namespace WOC
             movesManager.OnGameEnd -= OnGameEnd;
         }
 
-        private void OnMoveEnd(Player arg1, bool arg2)
+        private void OnMoveEnd(Player currentPlayer, bool isFirstStage, List<Player> players, GridCreator grid)
         {
-            Save();
+            Save(currentPlayer, isFirstStage, players, grid);
         }
 
         private void OnGameEnd(Player winner)
@@ -41,9 +48,13 @@ namespace WOC
             DeleteSave();
         }
 
-        private void Save()
+        private void Save(Player currentPlayer, bool isFirstStage, List<Player> players, GridCreator grid)
         {
+            var data = new SaveData(currentPlayer, isFirstStage, players, grid);
 
+            string json = JsonUtility.ToJson(data, true);
+
+            File.WriteAllText(savePath, json);
         }
 
         private void DeleteSave()
@@ -59,6 +70,42 @@ namespace WOC
             if (File.Exists(savePath))
             {
                 string json = File.ReadAllText(savePath);
+                var data = JsonUtility.FromJson<SaveData>(json);
+
+                FindObjectOfType<MovesManager>().Load(data);
+            }
+        }
+    }
+
+    [System.Serializable]
+    public class SaveData
+    {
+        public int Width = 0;
+        public int Height = 0;
+        public bool IsFirstStage = false;
+        public int CurrentPlayerIndex = 0;
+        public Player[] Players = null;
+        public TileData[] Tiles = null;
+
+        public SaveData(Player currentPlayer, bool isFirstStage, List<Player> players, GridCreator gridCreator)
+        {
+            Width = gridCreator.Width;
+            Height = gridCreator.Height;
+
+            IsFirstStage = isFirstStage;
+            CurrentPlayerIndex = currentPlayer.Index;
+
+            Players = players.ToArray();
+
+            Tiles = new TileData[Width * Height];
+
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    int index = y * Width + x;
+                    Tiles[index] = gridCreator.Grid[x, y].Data;
+                }
             }
         }
     }
