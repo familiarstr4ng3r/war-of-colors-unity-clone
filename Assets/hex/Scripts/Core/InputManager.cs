@@ -2,35 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputManager : MonoBehaviour
+namespace WOC
 {
-    [SerializeField] private bool isCameraMode = false;
-    private WOC.CameraController cameraController = null;
-
-    private void Start()
+    public class InputManager : MonoBehaviour
     {
-        cameraController = FindObjectOfType<WOC.CameraController>();
-    }
+        [SerializeField] private bool isCameraMode = false;
+        private CameraController cameraController = null;
 
-    private void Update()
-    {
-        if (isCameraMode)
+        private void Start()
         {
-            cameraController.HandleCamera();
+            cameraController = FindObjectOfType<CameraController>();
         }
-        else
+
+        private void Update()
         {
-            HandleInput();
+            if (isCameraMode)
+            {
+                cameraController.HandleCamera();
+            }
+            else
+            {
+                HandleInput();
+            }
         }
-    }
 
-    private void HandleInput()
-    {
+        private void HandleInput()
+        {
 
-    }
+        }
 
-    public void ChangeMode()
-    {
-        isCameraMode = !isCameraMode;
+        public void ChangeMode()
+        {
+            isCameraMode = !isCameraMode;
+        }
     }
 }

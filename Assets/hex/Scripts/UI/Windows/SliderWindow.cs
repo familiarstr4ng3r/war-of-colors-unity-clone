@@ -3,53 +3,56 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SliderWindow : MonoBehaviour
+namespace WOC
 {
-    [SerializeField] private GameObject go = null;
-    [SerializeField] private Slider slider = null;
-    [SerializeField] private Text label = null;
-    [SerializeField] private Button addButton = null;
-    [SerializeField] private Button closeButton = null;
-
-    private int selectedAmount = 0;
-
-    private void Start()
+    public class SliderWindow : MonoBehaviour
     {
-        var manager = FindObjectOfType<MovesManager>();
+        [SerializeField] private GameObject go = null;
+        [SerializeField] private Slider slider = null;
+        [SerializeField] private Text label = null;
+        [SerializeField] private Button addButton = null;
+        [SerializeField] private Button closeButton = null;
 
-        addButton.onClick.AddListener(() => manager.OnAddCLick(selectedAmount));
-        closeButton.onClick.AddListener(Deactivate);
-        slider.onValueChanged.AddListener((value) => OnValueChange());
+        private int selectedAmount = 0;
 
-        Deactivate();
-    }
+        private void Start()
+        {
+            var manager = FindObjectOfType<MovesManager>();
 
-    public void Activate(int maxValue)
-    {
-        slider.wholeNumbers = true;
-        slider.maxValue = maxValue;
-        slider.value = slider.maxValue;
+            addButton.onClick.AddListener(() => manager.OnAddCLick(selectedAmount));
+            closeButton.onClick.AddListener(Deactivate);
+            slider.onValueChanged.AddListener((value) => OnValueChange());
 
-        UpdateLabel();
+            Deactivate();
+        }
 
-        go.SetActive(true);
-    }
+        public void Activate(int maxValue)
+        {
+            slider.wholeNumbers = true;
+            slider.maxValue = maxValue;
+            slider.value = slider.maxValue;
 
-    public void Deactivate()
-    {
-        go.SetActive(false);
+            UpdateLabel();
 
-        MovesManager.IsClickBlocked = false;
-    }
+            go.SetActive(true);
+        }
 
-    private void OnValueChange()
-    {
-        UpdateLabel();
-        selectedAmount = Mathf.RoundToInt(slider.value);
-    }
+        public void Deactivate()
+        {
+            go.SetActive(false);
 
-    private void UpdateLabel()
-    {
-        label.text = $"{slider.value}/{slider.maxValue}";
+            MovesManager.IsClickBlocked = false;
+        }
+
+        private void OnValueChange()
+        {
+            UpdateLabel();
+            selectedAmount = Mathf.RoundToInt(slider.value);
+        }
+
+        private void UpdateLabel()
+        {
+            label.text = $"{slider.value}/{slider.maxValue}";
+        }
     }
 }

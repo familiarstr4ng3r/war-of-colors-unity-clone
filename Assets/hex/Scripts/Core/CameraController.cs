@@ -26,6 +26,8 @@ namespace WOC
 
         private float targetZoom = 0;
 
+        public Camera Camera => cam;
+
         private void Start()
         {
             cam = Camera.main;

@@ -3,29 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GridSettingsWindow : MonoBehaviour
+namespace WOC
 {
-    [SerializeField] private InputField width = null;
-    [SerializeField] private InputField height = null;
-    [SerializeField] private Text label = null;
-
-    private Vector2Int size = Vector2Int.zero;
-    public Vector2Int GridSize => size;
-
-    private void Awake()
+    public class GridSettingsWindow : MonoBehaviour
     {
-        width.onValueChanged.AddListener((text) => OnChange(text, true));
-        height.onValueChanged.AddListener((text) => OnChange(text, false));
-    }
+        [SerializeField] private InputField widthField = null;
+        [SerializeField] private InputField heightField = null;
+        [SerializeField] private Text label = null;
 
-    private void OnChange(string text, bool isWidth)
-    {
-        //if (!int.TryParse(text, out int value)) return;
-        int.TryParse(text, out int value);
+        private GridCreator grid = null;
 
-        if (isWidth) size.x = value;
-        else size.y = value;
+        private void Awake()
+        {
+            grid = FindObjectOfType<GridCreator>();
 
-        label.text = size.ToString();
+            widthField.onValueChanged.AddListener((text) => OnChange(text, true));
+            heightField.onValueChanged.AddListener((text) => OnChange(text, false));
+
+            UpdateLabel();
+        }
+
+        private void OnChange(string text, bool isWidth)
+        {
+            int.TryParse(text, out int value);
+
+            if (isWidth) grid.Width = value;
+            else grid.Height = value;
+
+            UpdateLabel();
+        }
+
+        private void UpdateLabel()
+        {
+            label.text = $"Ширина: {grid.Width} / Высота: {grid.Height}";
+        }
     }
 }

@@ -4,299 +4,301 @@ using System.Linq;
 using System;
 using UnityEngine;
 
-public class MovesManager : MonoBehaviour
+namespace WOC
 {
-    public event Action<Player> OnGameEnd;
-    public event Action<Player, bool> OnMoveEnd;
-
-    private int currentPlayerIndex = 0;
-    private List<Player> players = new List<Player>();
-
-    private Player currentPlayer = null;
-    private Camera cam = null;
-
-    private bool isGameStarted = false;
-    private bool isFirstStage = true;
-    private int lap = 0;
-
-    [SerializeField] private int startAmount = 10;
-    //[SerializeField] private Transform circle = null;
-    [SerializeField] private NextStageButton nextStageButton = null;
-    [SerializeField] private SliderWindow sliderWindow = null;
-    [SerializeField] private GridSettingsWindow gridWindow = null;
-
-    private HexTile selectedTile = null;
-
-    public static bool IsClickBlocked = false;
-
-    private void Update()
+    public class MovesManager : MonoBehaviour
     {
-        HandleInput();
-    }
+        public event Action<Player> OnGameEnd;
+        public event Action<Player, bool> OnMoveEnd;
 
-    public void Init()
-    {
-        cam = Camera.main;
-        isGameStarted = true;
-        IsClickBlocked = false;
+        private int currentPlayerIndex = 0;
+        private List<Player> players = new List<Player>();
 
-        UpdateCurrentPlayer();
+        private Player currentPlayer = null;
+        private Camera cam = null;
 
-        var grid = FindObjectOfType<GridCreator>();
-        grid.Create(gridWindow.GridSize);
-        grid.SetPlayers(players, startAmount);
+        private bool isGameStarted = false;
+        private bool isFirstStage = true;
+        private int lap = 0;
 
-        nextStageButton.Init(NextStage);
-        nextStageButton.UpdateVisual(isFirstStage);
+        [SerializeField] private int startAmount = 10;
+        //[SerializeField] private Transform circle = null;
+        [SerializeField] private NextStageButton nextStageButton = null;
+        [SerializeField] private SliderWindow sliderWindow = null;
 
-        OnMoveEnd?.Invoke(currentPlayer, isFirstStage);
-        //Debug.Log("inited");
-    }
+        private HexTile selectedTile = null;
 
-    private void UpdateCurrentPlayer()
-    {
-        currentPlayer = players[currentPlayerIndex];
-    }
+        public static bool IsClickBlocked = false;
 
-    private void NextStage()
-    {
-        selectedTile = null;
-
-        if (isFirstStage)
+        private void Update()
         {
-            currentPlayer.OnSecondStage();
-        }
-        else
-        {
-            NextPlayer();
+            HandleInput();
         }
 
-        isFirstStage = !isFirstStage;
-
-        nextStageButton.UpdateVisual(isFirstStage);
-
-        OnMoveEnd?.Invoke(currentPlayer, isFirstStage);
-    }
-
-    private void NextPlayer()
-    {
-        if (currentPlayerIndex == players.Count - 1)
+        public void Init()
         {
-            currentPlayerIndex = 0;
-            lap++;
+            cam = Camera.main;
+            isGameStarted = true;
+            IsClickBlocked = false;
+
+            UpdateCurrentPlayer();
+
+            var grid = FindObjectOfType<GridCreator>();
+            grid.Create();
+            grid.SetPlayers(players, startAmount);
+
+            nextStageButton.Init(NextStage);
+            nextStageButton.UpdateVisual(isFirstStage);
+
+            OnMoveEnd?.Invoke(currentPlayer, isFirstStage);
+            //Debug.Log("inited");
         }
-        else currentPlayerIndex++;
 
-        UpdateCurrentPlayer();
-
-        if (currentPlayer.IsLooser())
+        private void UpdateCurrentPlayer()
         {
-            //Debug.Log("пропуск " + currentPlayer.name);
-            NextPlayer();
+            currentPlayer = players[currentPlayerIndex];
         }
-    }
 
-    public void AddPlayer(Player p)
-    {
-        players.Add(p);
-    }
-
-    private void HandleInput()
-    {
-        if (Input.GetKeyUp(KeyCode.Mouse0) && isGameStarted)
+        private void NextStage()
         {
-            if (IsClickBlocked) return;
+            selectedTile = null;
 
-            Vector3 worldPos = cam.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector3.forward);
-
-            if (hit.collider)
+            if (isFirstStage)
             {
-                var clickedTile = hit.collider.GetComponent<HexTile>();
+                currentPlayer.OnSecondStage();
+            }
+            else
+            {
+                NextPlayer();
+            }
 
-                if (isFirstStage)
-                    HandleMoving(clickedTile);
-                else
-                    HandleAdding(clickedTile);
+            isFirstStage = !isFirstStage;
+
+            nextStageButton.UpdateVisual(isFirstStage);
+
+            OnMoveEnd?.Invoke(currentPlayer, isFirstStage);
+        }
+
+        private void NextPlayer()
+        {
+            if (currentPlayerIndex == players.Count - 1)
+            {
+                currentPlayerIndex = 0;
+                lap++;
+            }
+            else currentPlayerIndex++;
+
+            UpdateCurrentPlayer();
+
+            if (currentPlayer.IsLooser())
+            {
+                //Debug.Log("пропуск " + currentPlayer.name);
+                NextPlayer();
             }
         }
-    }
 
-    private void HandleMoving(HexTile clickedTile)
-    {
-        if (currentPlayer.HasTile(clickedTile))
+        public void AddPlayer(Player p)
         {
-            selectedTile = clickedTile;
-
-            //if (selectedTile.Amount > 1) circle.position = selectedTile.transform.position;
+            players.Add(p);
         }
-        else
+
+        private void HandleInput()
         {
-            if (!selectedTile) return;
-
-            if (selectedTile.Amount > 1 && selectedTile.HasNeighbour(clickedTile))
+            if (Input.GetKeyUp(KeyCode.Mouse0) && isGameStarted)
             {
-                bool isEnemyTile = !clickedTile.IsEmpty() && currentPlayer.Index != clickedTile.Data.PlayerIndex;
+                if (IsClickBlocked) return;
 
-                if (isEnemyTile)
+                Vector3 worldPos = cam.ScreenToWorldPoint(Input.mousePosition);
+                RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector3.forward);
+
+                if (hit.collider)
                 {
-                    var enemy = players[clickedTile.Data.PlayerIndex];
+                    var clickedTile = hit.collider.GetComponent<HexTile>();
 
-                    if (selectedTile.Amount > clickedTile.Amount)
+                    if (isFirstStage)
+                        HandleMoving(clickedTile);
+                    else
+                        HandleAdding(clickedTile);
+                }
+            }
+        }
+
+        private void HandleMoving(HexTile clickedTile)
+        {
+            if (currentPlayer.HasTile(clickedTile))
+            {
+                selectedTile = clickedTile;
+
+                //if (selectedTile.Amount > 1) circle.position = selectedTile.transform.position;
+            }
+            else
+            {
+                if (!selectedTile) return;
+
+                if (selectedTile.Amount > 1 && selectedTile.HasNeighbour(clickedTile))
+                {
+                    bool isEnemyTile = !clickedTile.IsEmpty() && currentPlayer.Index != clickedTile.Data.PlayerIndex;
+
+                    if (isEnemyTile)
                     {
-                        int difference = selectedTile.Amount - clickedTile.Amount;
-                        clickedTile.Player = currentPlayer;
-                        clickedTile.Amount = difference;
+                        var enemy = players[clickedTile.Data.PlayerIndex];
 
-                        selectedTile.Amount = 1;
-
-                        currentPlayer.TilesCount++;
-                        enemy.TilesCount--;
-
-                        selectedTile = clickedTile;
-                    }
-                    else if (selectedTile.Amount == clickedTile.Amount)
-                    {
-                        bool attackerWin = UnityEngine.Random.Range(0, 2) == 0;
-
-                        if (attackerWin)
+                        if (selectedTile.Amount > clickedTile.Amount)
                         {
-                            enemy.TilesCount--;
-
-                            //selectedTile.Player = null;
-                            selectedTile.Amount = 1;
-
+                            int difference = selectedTile.Amount - clickedTile.Amount;
                             clickedTile.Player = currentPlayer;
-                            clickedTile.Amount = 1;
+                            clickedTile.Amount = difference;
+
+                            selectedTile.Amount = 1;
 
                             currentPlayer.TilesCount++;
+                            enemy.TilesCount--;
+
+                            selectedTile = clickedTile;
                         }
-                        else
+                        else if (selectedTile.Amount == clickedTile.Amount)
                         {
-                            enemy.TilesCount++;
+                            bool attackerWin = UnityEngine.Random.Range(0, 2) == 0;
 
-                            selectedTile.Player = enemy;
-                            selectedTile.Amount = 1;
+                            if (attackerWin)
+                            {
+                                enemy.TilesCount--;
 
-                            //clickedTile.Player = currentPlayer;
-                            clickedTile.Amount = 1;
+                                //selectedTile.Player = null;
+                                selectedTile.Amount = 1;
+
+                                clickedTile.Player = currentPlayer;
+                                clickedTile.Amount = 1;
+
+                                currentPlayer.TilesCount++;
+                            }
+                            else
+                            {
+                                enemy.TilesCount++;
+
+                                selectedTile.Player = enemy;
+                                selectedTile.Amount = 1;
+
+                                //clickedTile.Player = currentPlayer;
+                                clickedTile.Amount = 1;
+
+                                currentPlayer.TilesCount--;
+                            }
+
+                            selectedTile = null;
+                        }
+                        else if (selectedTile.Amount < clickedTile.Amount)
+                        {
+                            int difference = Mathf.Abs(selectedTile.Amount - clickedTile.Amount);
+
+                            selectedTile.Amount = 0;
+                            selectedTile.Player = null;
+
+                            clickedTile.Amount = difference;
+
+                            selectedTile = null;
 
                             currentPlayer.TilesCount--;
                         }
-
-                        selectedTile = null;
                     }
-                    else if (selectedTile.Amount < clickedTile.Amount)
+                    else
                     {
-                        int difference = Mathf.Abs(selectedTile.Amount - clickedTile.Amount);
-                        
-                        selectedTile.Amount = 0;
-                        selectedTile.Player = null;
+                        int newAmount = selectedTile.Amount - 1;
 
-                        clickedTile.Amount = difference;
+                        clickedTile.Player = currentPlayer;
+                        clickedTile.Amount = newAmount;
 
-                        selectedTile = null;
+                        selectedTile.Amount = 1;
+                        selectedTile = clickedTile;
+                        currentPlayer.TilesCount++;
 
-                        currentPlayer.TilesCount--;
+                        //circle.position = clickedTile.Amount > 1 ? clickedTile.transform.position : new Vector3(20, 20);
                     }
+
+
+                    CheckPlayerWin();
                 }
-                else
-                {
-                    int newAmount = selectedTile.Amount - 1;
-
-                    clickedTile.Player = currentPlayer;
-                    clickedTile.Amount = newAmount;
-
-                    selectedTile.Amount = 1;
-                    selectedTile = clickedTile;
-                    currentPlayer.TilesCount++;
-
-                    //circle.position = clickedTile.Amount > 1 ? clickedTile.transform.position : new Vector3(20, 20);
-                }
-
-
-                CheckPlayerWin();
             }
         }
-    }
 
-    private void HandleAdding(HexTile clickedTile)
-    {
-        if (currentPlayer.AvailableAmount > 0 && currentPlayer.HasTile(clickedTile))
+        private void HandleAdding(HexTile clickedTile)
         {
-            selectedTile = clickedTile;
-            sliderWindow.Activate(currentPlayer.AvailableAmount);
-            IsClickBlocked = true;
-        }
-    }
-
-    public void OnAddCLick(int amount)
-    {
-        currentPlayer.AvailableAmount -= amount;
-        selectedTile.Amount += amount;
-
-        //selectedTile.UpdateVisual(currentPlayer);
-
-        sliderWindow.Deactivate();
-        IsClickBlocked = false;
-
-        OnMoveEnd?.Invoke(currentPlayer, isFirstStage);
-    }
-
-    private Player IsPlayerTile(HexTile tile)
-    {
-        Player player = null;
-
-        for (int i = 0, length = players.Count; i < length; i++)
-        {
-            if (players[i].HasTile(tile))
+            if (currentPlayer.AvailableAmount > 0 && currentPlayer.HasTile(clickedTile))
             {
-                player = players[i];
-                break;
+                selectedTile = clickedTile;
+                sliderWindow.Activate(currentPlayer.AvailableAmount);
+                IsClickBlocked = true;
             }
         }
 
-        return player;
-    }
-
-    private void CheckPlayerWin()
-    {
-        var winners = players.Where(p => !p.IsLooser()).ToArray();
-
-        if (winners.Length == 1)
+        public void OnAddCLick(int amount)
         {
-            IsClickBlocked = true;
-            OnGameEnd?.Invoke(winners[0]);
+            currentPlayer.AvailableAmount -= amount;
+            selectedTile.Amount += amount;
+
+            //selectedTile.UpdateVisual(currentPlayer);
+
+            sliderWindow.Deactivate();
+            IsClickBlocked = false;
+
+            OnMoveEnd?.Invoke(currentPlayer, isFirstStage);
         }
-    }
 
-    private void OnGUI()
-    {
-        if (currentPlayer == null) return;
-
-        var old = GUI.color;
-        GUI.color = Color.white;
-
-        var rect = new Rect(10, 10, 500, 30);
-
-        GUI.Label(rect, currentPlayer.Name);
-
-        for (int i = 0; i < players.Count; i++)
+        private Player IsPlayerTile(HexTile tile)
         {
+            Player player = null;
+
+            for (int i = 0, length = players.Count; i < length; i++)
+            {
+                if (players[i].HasTile(tile))
+                {
+                    player = players[i];
+                    break;
+                }
+            }
+
+            return player;
+        }
+
+        private void CheckPlayerWin()
+        {
+            var winners = players.Where(p => !p.IsLooser()).ToArray();
+
+            if (winners.Length == 1)
+            {
+                IsClickBlocked = true;
+                OnGameEnd?.Invoke(winners[0]);
+            }
+        }
+
+        private void OnGUI()
+        {
+            if (currentPlayer == null) return;
+
+            var old = GUI.color;
+            GUI.color = Color.white;
+
+            var rect = new Rect(10, 10, 500, 30);
+
+            GUI.Label(rect, currentPlayer.Name);
+
+            for (int i = 0; i < players.Count; i++)
+            {
+                rect.y += 30;
+
+                //GUI.color = players[i].Color;
+                //GUI.Label(rect, "III");
+                //GUI.color = Color.white;
+
+                string text = players[i].ToString();
+                GUI.Label(rect, text);
+            }
+
+            GUI.color = Color.white;
             rect.y += 30;
+            GUI.Toggle(rect, selectedTile != null, " - Has selected tile");
 
-            //GUI.color = players[i].Color;
-            //GUI.Label(rect, "III");
-            //GUI.color = Color.white;
-
-            string text = players[i].ToString();
-            GUI.Label(rect, text);
+            GUI.color = old;
         }
-
-        GUI.color = Color.white;
-        rect.y += 30;
-        GUI.Toggle(rect, selectedTile != null, " - Has selected tile");
-
-        GUI.color = old;
     }
 }

@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MenuButton : MonoBehaviour
+namespace WOC
 {
-    [SerializeField] private int childIndex = 0;
-
-    private void Start()
+    public class MenuButton : MonoBehaviour
     {
-        var menu = FindObjectOfType<MenuWindow>();
-        var button = GetComponent<Button>();
-        button.onClick.AddListener(() => menu.OnClick(childIndex));
+        [SerializeField] private int childIndex = 0;
+
+        private void Start()
+        {
+            var menu = FindObjectOfType<MenuWindow>();
+            var button = GetComponent<Button>();
+            button.onClick.AddListener(() => menu.OnClick(childIndex));
+        }
     }
 }

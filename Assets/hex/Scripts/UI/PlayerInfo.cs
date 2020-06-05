@@ -3,34 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerInfo : MonoBehaviour
+namespace WOC
 {
-    private MovesManager movesManager = null;
-
-    [SerializeField] private Image backgroundImage = null;
-    [SerializeField] private Text label = null;
-
-    private void Awake()
+    public class PlayerInfo : MonoBehaviour
     {
-        movesManager = FindObjectOfType<MovesManager>();
-    }
+        private MovesManager movesManager = null;
 
-    private void OnEnable()
-    {
-        movesManager.OnMoveEnd += OnMoveEnd;
-    }
+        [SerializeField] private Image backgroundImage = null;
+        [SerializeField] private Text label = null;
 
-    private void OnDisable()
-    {
-        movesManager.OnMoveEnd -= OnMoveEnd;
-    }
+        private void Awake()
+        {
+            movesManager = FindObjectOfType<MovesManager>();
+        }
 
-    private void OnMoveEnd(Player player, bool isFirstStage)
-    {
-        string t = isFirstStage ? "Фаза атаки" : "Фаза пополнения";
-        string t1 = isFirstStage ? string.Empty : $"Войск в наличии - {player.AvailableAmount}";
-        label.text = $"{t} - сейчас ходит {player.Name} {t1}";
+        private void OnEnable()
+        {
+            movesManager.OnMoveEnd += OnMoveEnd;
+        }
 
-        backgroundImage.color = player.Color;
+        private void OnDisable()
+        {
+            movesManager.OnMoveEnd -= OnMoveEnd;
+        }
+
+        private void OnMoveEnd(Player player, bool isFirstStage)
+        {
+            string t = isFirstStage ? "Фаза атаки" : "Фаза пополнения";
+            string t1 = isFirstStage ? string.Empty : $"Войск в наличии - {player.AvailableAmount}";
+            label.text = $"{t} - сейчас ходит {player.Name} {t1}";
+
+            backgroundImage.color = player.Color;
+        }
     }
 }

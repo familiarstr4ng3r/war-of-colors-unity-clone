@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CameraButton : MonoBehaviour
+namespace WOC
 {
-    private void Start()
+    public class CameraButton : MonoBehaviour
     {
-        var inputManager = FindObjectOfType<InputManager>();
-        var button = GetComponent<Button>();
-        button.onClick.AddListener(inputManager.ChangeMode);
+        private void Start()
+        {
+            var inputManager = FindObjectOfType<InputManager>();
+            var button = GetComponent<Button>();
+            button.onClick.AddListener(inputManager.ChangeMode);
+        }
     }
 }

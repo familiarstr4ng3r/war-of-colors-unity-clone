@@ -3,55 +3,58 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MenuWindow : MonoBehaviour
+namespace WOC
 {
-    [SerializeField] private Button startButton = null;
-    [SerializeField] private List<GameObject> windows = new List<GameObject>();
-    [SerializeField] private GameObject gameplayUI = null;
-
-    private GameObject content = null;
-
-    private void Start()
+    public class MenuWindow : MonoBehaviour
     {
-        content = transform.GetChild(0).gameObject;
+        [SerializeField] private Button startButton = null;
+        [SerializeField] private List<GameObject> windows = new List<GameObject>();
+        [SerializeField] private GameObject gameplayUI = null;
 
-        startButton.onClick.AddListener(StartGame);
+        private GameObject content = null;
 
-        OnClick(1);
-    }
-
-    private void StartGame()
-    {
-        var manager = FindObjectOfType<MovesManager>();
-        var players = FindObjectOfType<PlayersWindow>().Players;
-
-        for (int i = 0, length = players.Count; i < length; i++)
+        private void Start()
         {
-            var player = players[i].CreatePlayer(i);
-            manager.AddPlayer(player);
+            content = transform.GetChild(0).gameObject;
+
+            startButton.onClick.AddListener(StartGame);
+
+            OnClick(1);
         }
 
-        gameplayUI.SetActive(true);
-        manager.Init();
-
-        ChangeState(false);
-    }
-
-    private void ChangeState(bool active)
-    {
-        content.SetActive(active);
-    }
-
-    public void OnClick(int index)
-    {
-        for (int i = 0, length = windows.Count; i < length; i++)
+        private void StartGame()
         {
-            var w = windows[i].transform;
-            var content = w.GetChild(0).gameObject;
+            var manager = FindObjectOfType<MovesManager>();
+            var players = FindObjectOfType<PlayersWindow>().Players;
 
-            bool active = index == w.GetSiblingIndex();
+            for (int i = 0, length = players.Count; i < length; i++)
+            {
+                var player = players[i].CreatePlayer(i);
+                manager.AddPlayer(player);
+            }
 
+            gameplayUI.SetActive(true);
+            manager.Init();
+
+            ChangeState(false);
+        }
+
+        private void ChangeState(bool active)
+        {
             content.SetActive(active);
+        }
+
+        public void OnClick(int index)
+        {
+            for (int i = 0, length = windows.Count; i < length; i++)
+            {
+                var w = windows[i].transform;
+                var content = w.GetChild(0).gameObject;
+
+                bool active = index == w.GetSiblingIndex();
+
+                content.SetActive(active);
+            }
         }
     }
 }

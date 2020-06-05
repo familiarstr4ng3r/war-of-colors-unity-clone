@@ -3,42 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameOverWindow : MonoBehaviour
+namespace WOC
 {
-    [SerializeField] private Text label = null;
-    
-    private MovesManager movesManager = null;
-
-    private GameObject content = null;
-
-    private void Awake()
+    public class GameOverWindow : MonoBehaviour
     {
-        movesManager = FindObjectOfType<MovesManager>();
+        [SerializeField] private Text label = null;
 
-        content = transform.GetChild(0).gameObject;
+        private MovesManager movesManager = null;
 
-        ChangeState(false);
-    }
+        private GameObject content = null;
 
-    private void OnEnable()
-    {
-        movesManager.OnGameEnd += OnEnd;
-    }
+        private void Awake()
+        {
+            movesManager = FindObjectOfType<MovesManager>();
 
-    private void OnDisable()
-    {
-        movesManager.OnGameEnd -= OnEnd;
-    }
+            content = transform.GetChild(0).gameObject;
 
-    private void OnEnd(Player winner)
-    {
-        ChangeState(true);
+            ChangeState(false);
+        }
 
-        label.text = $"Победил {winner.Name}!";
-    }
+        private void OnEnable()
+        {
+            movesManager.OnGameEnd += OnEnd;
+        }
 
-    private void ChangeState(bool active)
-    {
-        content.SetActive(active);
+        private void OnDisable()
+        {
+            movesManager.OnGameEnd -= OnEnd;
+        }
+
+        private void OnEnd(Player winner)
+        {
+            ChangeState(true);
+
+            label.text = $"Победил {winner.Name}!";
+        }
+
+        private void ChangeState(bool active)
+        {
+            content.SetActive(active);
+        }
     }
 }
