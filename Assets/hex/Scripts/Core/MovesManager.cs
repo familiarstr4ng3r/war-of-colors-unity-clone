@@ -12,7 +12,6 @@ namespace WOC
         public event Action<Player, bool, List<Player>, GridCreator> OnMoveEnd;
 
         //[SerializeField] private Transform circle = null;
-        private SliderWindow sliderWindow = null;
 
         private int currentPlayerIndex = 0;
         private Player currentPlayer = null;
@@ -22,12 +21,22 @@ namespace WOC
         private bool isFirstStage = true;
         private int lap = 0;
 
-        private HexTile selectedTile = null;
+        private float dragTimer = 0;
+        private float dragTimeThreshold = 0.2f;
+        private float dragDistanceThreshold = 25;//pixels
 
-        public static bool IsClickBlocked = false;
+        private bool isDragging = false;
+        private Vector3 clickedPos = Vector3.zero;
+        private Vector3 dragPos = Vector3.zero;
+
+        private HexTile selectedTile = null;
+        private HexTile clickedTile = null;
 
         private GridCreator grid = null;
         private CameraController cameraController = null;
+        private SliderWindow sliderWindow = null;
+
+        public static bool IsClickBlocked = false;
 
         private void Awake()
         {
@@ -38,7 +47,18 @@ namespace WOC
 
         private void Update()
         {
-            HandleInput();
+            if (isGameStarted)
+            {
+                HandleInput();
+
+                if (isDragging)
+                {
+                    dragTimer += Time.deltaTime;
+                    dragPos = Input.mousePosition;
+
+                    HandleAddingSecondVersion();
+                }
+            }
         }
 
         public void Init()
@@ -122,10 +142,50 @@ namespace WOC
 
         private void HandleInput()
         {
-            if (Input.GetKeyUp(KeyCode.Mouse0) && isGameStarted)
+            if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                if (IsClickBlocked) return;
+                isDragging = true;
+                clickedPos = Input.mousePosition;
+            }
+            else if (Input.GetKeyUp(KeyCode.Mouse0))
+            {
+                if (!IsClickBlocked)
+                {
+                    Vector3 worldPos = cameraController.Camera.ScreenToWorldPoint(Input.mousePosition);
+                    RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector3.forward);
 
+                    if (hit.collider)
+                    {
+                        var clickedTile = hit.collider.GetComponent<HexTile>();
+
+                        if (isFirstStage)
+                        {
+                            if (currentPlayer.HasTile(clickedTile))
+                            {
+                                selectedTile = clickedTile;
+                            }
+                            else 
+                            {
+                                if (selectedTile && selectedTile.Amount > 1 && selectedTile.HasNeighbour(clickedTile))
+                                    HandleMovingToNewTile(clickedTile, selectedTile.Amount);
+                            }
+                        }
+                        else
+                        {
+                            HandleAdding(clickedTile);
+                        }
+                    }
+                }
+
+                isDragging = false;
+                dragTimer = 0;
+            }
+        }
+
+        private void HandleAddingSecondVersion()
+        {
+            if (dragTimer > dragTimeThreshold && Vector3.Distance(clickedPos, dragPos) < dragDistanceThreshold)
+            {
                 Vector3 worldPos = cameraController.Camera.ScreenToWorldPoint(Input.mousePosition);
                 RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector3.forward);
 
@@ -133,110 +193,103 @@ namespace WOC
                 {
                     var clickedTile = hit.collider.GetComponent<HexTile>();
 
-                    if (isFirstStage)
-                        HandleMoving(clickedTile);
-                    else
-                        HandleAdding(clickedTile);
+                    if (clickedTile.Player.Index != currentPlayerIndex && 
+                        selectedTile && 
+                        selectedTile.Amount > 1 && 
+                        selectedTile.HasNeighbour(clickedTile))
+                    {
+                        //открыть окно слайдера с максимальным значением selectedTile.amount
+                        //выбрать в слайдере кол-во и напасть на clickedTile с выбранным количеством
+                        Debug.Log("empty feauture");
+                    }
                 }
+
+                isDragging = false;
+                dragTimer = 0;
             }
         }
 
-        private void HandleMoving(HexTile clickedTile)
+        private void HandleMovingToNewTile(HexTile clickedTile, int attackAmount)
         {
-            if (currentPlayer.HasTile(clickedTile))
-            {
-                selectedTile = clickedTile;
+            bool isEnemyTile = !clickedTile.IsEmpty() && currentPlayer.Index != clickedTile.Data.PlayerIndex;
 
-                //if (selectedTile.Amount > 1) circle.position = selectedTile.transform.position;
-            }
-            else
+            if (isEnemyTile)
             {
-                if (!selectedTile) return;
+                var enemy = players[clickedTile.Data.PlayerIndex];
 
-                if (selectedTile.Amount > 1 && selectedTile.HasNeighbour(clickedTile))
+                if (selectedTile.Amount > clickedTile.Amount)
                 {
-                    bool isEnemyTile = !clickedTile.IsEmpty() && currentPlayer.Index != clickedTile.Data.PlayerIndex;
+                    int difference = selectedTile.Amount - clickedTile.Amount;
+                    clickedTile.Player = currentPlayer;
+                    clickedTile.Amount = difference;
 
-                    if (isEnemyTile)
+                    selectedTile.Amount = 1;
+
+                    currentPlayer.TilesCount++;
+                    enemy.TilesCount--;
+
+                    selectedTile = clickedTile;
+                }
+                else if (selectedTile.Amount == clickedTile.Amount)
+                {
+                    bool attackerWin = UnityEngine.Random.Range(0, 2) == 0;
+
+                    if (attackerWin)
                     {
-                        var enemy = players[clickedTile.Data.PlayerIndex];
+                        enemy.TilesCount--;
 
-                        if (selectedTile.Amount > clickedTile.Amount)
-                        {
-                            int difference = selectedTile.Amount - clickedTile.Amount;
-                            clickedTile.Player = currentPlayer;
-                            clickedTile.Amount = difference;
+                        //selectedTile.Player = null;
+                        selectedTile.Amount = 1;
 
-                            selectedTile.Amount = 1;
+                        clickedTile.Player = currentPlayer;
+                        clickedTile.Amount = 1;
 
-                            currentPlayer.TilesCount++;
-                            enemy.TilesCount--;
-
-                            selectedTile = clickedTile;
-                        }
-                        else if (selectedTile.Amount == clickedTile.Amount)
-                        {
-                            bool attackerWin = UnityEngine.Random.Range(0, 2) == 0;
-
-                            if (attackerWin)
-                            {
-                                enemy.TilesCount--;
-
-                                //selectedTile.Player = null;
-                                selectedTile.Amount = 1;
-
-                                clickedTile.Player = currentPlayer;
-                                clickedTile.Amount = 1;
-
-                                currentPlayer.TilesCount++;
-                            }
-                            else
-                            {
-                                enemy.TilesCount++;
-
-                                selectedTile.Player = enemy;
-                                selectedTile.Amount = 1;
-
-                                //clickedTile.Player = currentPlayer;
-                                clickedTile.Amount = 1;
-
-                                currentPlayer.TilesCount--;
-                            }
-
-                            selectedTile = null;
-                        }
-                        else if (selectedTile.Amount < clickedTile.Amount)
-                        {
-                            int difference = Mathf.Abs(selectedTile.Amount - clickedTile.Amount);
-
-                            selectedTile.Amount = 0;
-                            selectedTile.Player = null;
-
-                            clickedTile.Amount = difference;
-
-                            selectedTile = null;
-
-                            currentPlayer.TilesCount--;
-                        }
+                        currentPlayer.TilesCount++;
                     }
                     else
                     {
-                        int newAmount = selectedTile.Amount - 1;
+                        enemy.TilesCount++;
 
-                        clickedTile.Player = currentPlayer;
-                        clickedTile.Amount = newAmount;
-
+                        selectedTile.Player = enemy;
                         selectedTile.Amount = 1;
-                        selectedTile = clickedTile;
-                        currentPlayer.TilesCount++;
 
-                        //circle.position = clickedTile.Amount > 1 ? clickedTile.transform.position : new Vector3(20, 20);
+                        //clickedTile.Player = currentPlayer;
+                        clickedTile.Amount = 1;
+
+                        currentPlayer.TilesCount--;
                     }
 
+                    selectedTile = null;
+                }
+                else if (selectedTile.Amount < clickedTile.Amount)
+                {
+                    int difference = Mathf.Abs(selectedTile.Amount - clickedTile.Amount);
 
-                    CheckPlayerWin();
+                    selectedTile.Amount = 0;
+                    selectedTile.Player = null;
+
+                    clickedTile.Amount = difference;
+
+                    selectedTile = null;
+
+                    currentPlayer.TilesCount--;
                 }
             }
+            else
+            {
+                int newAmount = selectedTile.Amount - 1;
+
+                clickedTile.Player = currentPlayer;
+                clickedTile.Amount = newAmount;
+
+                selectedTile.Amount = 1;
+                selectedTile = clickedTile;
+                currentPlayer.TilesCount++;
+
+                //circle.position = clickedTile.Amount > 1 ? clickedTile.transform.position : new Vector3(20, 20);
+            }
+
+            CheckPlayerWin();
         }
 
         private void HandleAdding(HexTile clickedTile)
@@ -250,10 +303,18 @@ namespace WOC
 
         public void OnAddCLick(int amount)
         {
-            currentPlayer.AvailableAmount -= amount;
-            selectedTile.Amount += amount;
+            if (isFirstStage)
+            {
+                HandleMovingToNewTile(clickedTile, amount);
+            }
+            else
+            {
+                currentPlayer.AvailableAmount -= amount;
+                selectedTile.Amount += amount;
+            }
 
             sliderWindow.Deactivate();
+
             OnMoveEnd?.Invoke(currentPlayer, isFirstStage, players, grid);
         }
 
