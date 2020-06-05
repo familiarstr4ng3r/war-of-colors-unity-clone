@@ -7,23 +7,18 @@ namespace WOC
 {
     public class SaveManager : MonoBehaviour
     {
-        [SerializeField] private bool loadAtStart = false;
-
         private MovesManager movesManager = null;
 
         private string savePath = string.Empty;
         private const string fileName = "WOC_save.json";
+
+        public bool HasSave => File.Exists(savePath);
 
         private void Awake()
         {
             movesManager = FindObjectOfType<MovesManager>();
 
             savePath = Path.Combine(Application.isEditor ? Application.dataPath : Application.persistentDataPath, fileName);
-        }
-
-        private void Start()
-        {
-            if (loadAtStart) Load();
         }
 
         private void OnEnable()
@@ -59,15 +54,15 @@ namespace WOC
 
         private void DeleteSave()
         {
-            if (File.Exists(savePath))
+            if (HasSave)
             {
                 File.Delete(savePath);
             }
         }
 
-        private void Load()
+        public void Load()
         {
-            if (File.Exists(savePath))
+            if (HasSave)
             {
                 string json = File.ReadAllText(savePath);
                 var data = JsonUtility.FromJson<SaveData>(json);
