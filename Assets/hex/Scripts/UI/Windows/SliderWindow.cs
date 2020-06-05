@@ -13,7 +13,10 @@ namespace WOC
         [SerializeField] private Button addButton = null;
         [SerializeField] private Button closeButton = null;
 
+        private Text buttonLabel = null;
+
         private int selectedAmount = 0;
+        private bool isFirstStage = true;
 
         private void Start()
         {
@@ -23,11 +26,15 @@ namespace WOC
             closeButton.onClick.AddListener(Deactivate);
             slider.onValueChanged.AddListener((value) => OnValueChange());
 
+            buttonLabel = addButton.GetComponentInChildren<Text>();
+
             Deactivate();
         }
 
-        public void Activate(int maxValue)
+        public void Activate(int maxValue, bool firstStage)
         {
+            isFirstStage = firstStage;
+
             slider.wholeNumbers = true;
             slider.maxValue = maxValue;
             slider.value = slider.maxValue;
@@ -54,7 +61,10 @@ namespace WOC
 
         private void UpdateLabel()
         {
-            label.text = $"{slider.value}/{slider.maxValue}";
+            string text = isFirstStage ? "Выбрано для атаки" : "Выбрано для пополнения";
+            label.text = $"{text}: {slider.value}/{slider.maxValue}";
+
+            buttonLabel.text = isFirstStage ? "Атаковать" : "Пополнить";
         }
     }
 }
