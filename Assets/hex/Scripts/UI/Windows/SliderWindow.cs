@@ -11,29 +11,55 @@ namespace WOC
         [SerializeField] private Slider slider = null;
         [SerializeField] private Text label = null;
         [SerializeField] private Button addButton = null;
+        [SerializeField] private Button transferButton = null;
         [SerializeField] private Button closeButton = null;
-
-        private Text buttonLabel = null;
 
         private int selectedAmount = 0;
         private bool isFirstStage = true;
+        private bool isTransfering = false;
+
+        private string sliderText = string.Empty;
 
         private void Start()
         {
             var manager = FindObjectOfType<MovesManager>();
 
-            addButton.onClick.AddListener(() => manager.OnAddCLick(selectedAmount));
+            addButton.onClick.AddListener(() => manager.OnClickAdd(selectedAmount, isTransfering));
+            transferButton.onClick.AddListener(() => manager.OnClickTransfer(selectedAmount));
+
             closeButton.onClick.AddListener(Deactivate);
             slider.onValueChanged.AddListener((value) => OnValueChange());
-
-            buttonLabel = addButton.GetComponentInChildren<Text>();
 
             Deactivate();
         }
 
+        //используется для передачи войск на стадии пополнения
+        public void Activate(int maxValue, string text, bool transfering)
+        {
+            isTransfering = transfering;
+
+            slider.wholeNumbers = true;
+            slider.maxValue = maxValue;
+            slider.value = slider.maxValue;
+
+            transferButton.gameObject.SetActive(true);
+
+            go.SetActive(true);
+
+            //label.text = text.Replace("*text*", sliderText);
+            UpdateLabel();
+
+            MovesManager.IsClickBlocked = true;
+        }
+
+        //используется для выбора количества при атаке
         public void Activate(int maxValue, bool firstStage)
         {
             isFirstStage = firstStage;
+
+            isTransfering = false;
+
+            transferButton.gameObject.SetActive(false);
 
             slider.wholeNumbers = true;
             slider.maxValue = maxValue;
@@ -61,10 +87,14 @@ namespace WOC
 
         private void UpdateLabel()
         {
-            string text = isFirstStage ? "Выбрано для атаки" : "Выбрано для пополнения";
-            label.text = $"{text}: {slider.value}/{slider.maxValue}";
+            //string text = isFirstStage ? "Выбрано для атаки" : "Выбрано для пополнения";
+            //label.text = $"{text}: {slider.value}/{slider.maxValue}";
 
-            buttonLabel.text = isFirstStage ? "Атаковать" : "Пополнить";
+            sliderText = $"{slider.value}/{slider.maxValue}";
+            label.text = sliderText;
+
+            string t = isTransfering ? "Пополнить" : (isFirstStage ? "Атаковать" : "Пополнить");
+            addButton.GetComponentInChildren<Text>().text = t;
         }
     }
 }

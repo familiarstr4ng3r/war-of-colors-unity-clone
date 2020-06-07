@@ -212,6 +212,14 @@ namespace WOC
                         Debug.Log("new feauture");
                         sliderWindow.Activate(selectedTile.Amount, true);
                     }
+                    else if (!isFirstStage && isEnemyTile)
+                    {
+                        Debug.Log("s");
+                        selectedTile = clickedTile;
+
+                        //string text = $"Пополнить войско {selectedTile.Player.Name} *text*";
+                        sliderWindow.Activate(currentPlayer.AvailableAmount, "", true);
+                    }
                 }
 
                 isDragging = false;
@@ -345,18 +353,36 @@ namespace WOC
             }
         }
 
-        public void OnAddCLick(int amount)
+        public void OnClickAdd(int amount, bool isTransfering)
         {
-            if (isFirstStage)
+            if (isTransfering)
             {
-                HandleMovingToNewTile(clickedTile, amount);
-                clickedTile = null;
+                selectedTile.Amount += amount;
+                currentPlayer.AvailableAmount -= amount;
             }
             else
             {
-                currentPlayer.AvailableAmount -= amount;
-                selectedTile.Amount += amount;
+                if (isFirstStage)
+                {
+                    HandleMovingToNewTile(clickedTile, amount);
+                    clickedTile = null;
+                }
+                else
+                {
+                    currentPlayer.AvailableAmount -= amount;
+                    selectedTile.Amount += amount;
+                }
             }
+
+            sliderWindow.Deactivate();
+
+            OnMoveEnd?.Invoke(currentPlayer, isFirstStage, players, grid);
+        }
+
+        public void OnClickTransfer(int amount)
+        {
+            selectedTile.Player.AvailableAmount += amount;
+            currentPlayer.AvailableAmount -= amount;
 
             sliderWindow.Deactivate();
 
