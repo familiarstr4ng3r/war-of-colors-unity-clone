@@ -7,41 +7,41 @@ namespace WOC
 {
     public class GameOverWindow : MonoBehaviour
     {
-        [SerializeField] private Text label = null;
+        [SerializeField] private Text m_Label = null;
+        [SerializeField] private GameObject m_Content = null;
 
-        private MovesManager movesManager = null;
-
-        private GameObject content = null;
+        private MovesManager m_MovesManager = null;
 
         private void Awake()
         {
-            movesManager = FindObjectOfType<MovesManager>();
+            m_MovesManager = FindObjectOfType<MovesManager>();
+        }
 
-            content = transform.GetChild(0).gameObject;
-
+        private void Start()
+        {
             ChangeState(false);
         }
 
         private void OnEnable()
         {
-            movesManager.OnGameEnd += OnEnd;
+            m_MovesManager.OnGameEnd += OnGameEnd;
         }
 
         private void OnDisable()
         {
-            movesManager.OnGameEnd -= OnEnd;
+            m_MovesManager.OnGameEnd -= OnGameEnd;
         }
 
-        private void OnEnd(Player winner)
+        private void OnGameEnd(OnGameEndEventArgs args)
         {
             ChangeState(true);
 
-            label.text = $"Победил {winner.Name}!";
+            m_Label.text = $"Победил {args.Winner.Name}!";
         }
 
         private void ChangeState(bool active)
         {
-            content.SetActive(active);
+            m_Content.SetActive(active);
         }
     }
 }

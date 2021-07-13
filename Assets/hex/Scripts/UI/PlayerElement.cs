@@ -21,6 +21,12 @@ public class PlayerElement : MonoBehaviour
         //inputField.onValueChanged.AddListener((text) => window.ValidateNames());
     }
 
+    public void Init(int index)
+    {
+        transform.name = $"[Player Element]: {index}";
+        inputField.text = $"Player {index}";
+    }
+
     public void UpdateVisual(bool isLast)
     {
         deleteButton.interactable = !isLast;

@@ -7,28 +7,23 @@ namespace WOC
 {
     public class MenuWindow : MonoBehaviour
     {
-        [SerializeField] private Button startButton = null;
-        [SerializeField] private Button loadButton = null;
+        [SerializeField] private Button m_StartButton = null;
+        [SerializeField] private Button m_LoadButton = null;
 
         [SerializeField] private List<GameObject> windows = new List<GameObject>();
         [SerializeField] private GameObject gameplayUI = null;
+        [SerializeField] private GameObject m_Content = null;
 
-        private MovesManager movesManager = null;
-        private SaveManager saveManager = null;
-
-        private GameObject content = null;
+        private MovesManager m_MovesManager = null;
 
         private void Start()
         {
-            movesManager = FindObjectOfType<MovesManager>();
-            saveManager = FindObjectOfType<SaveManager>();
+            m_MovesManager = FindObjectOfType<MovesManager>();
 
-            content = transform.GetChild(0).gameObject;
+            m_StartButton.onClick.AddListener(() => StartGame(true));
+            m_LoadButton.onClick.AddListener(() => StartGame(false));
 
-            startButton.onClick.AddListener(() => StartGame(true));
-            loadButton.onClick.AddListener(() => StartGame(false));
-
-            loadButton.interactable = saveManager.HasSave;
+            m_LoadButton.interactable = SaveManager.HasSave(SaveHandler.FileName, out var temp);
 
             OnClick(1);
         }
@@ -39,19 +34,26 @@ namespace WOC
 
             if (newGame)
             {
-                var players = FindObjectOfType<PlayersWindow>().Players;
+                List<PlayerElement> players = FindObjectOfType<PlayersWindow>().Players;
 
                 for (int i = 0, length = players.Count; i < length; i++)
                 {
-                    var player = players[i].CreatePlayer(i);
-                    movesManager.AddPlayer(player);
+                    Player player = players[i].CreatePlayer(i);
+                    m_MovesManager.AddPlayer(player);
                 }
 
-                movesManager.Init();
+                m_MovesManager.Init();
             }
             else
             {
-                saveManager.Load();
+                if (SaveManager.Load(SaveHandler.FileName, out SaveData data))
+                {
+                    m_MovesManager.Load(data);
+                }
+                else
+                {
+                    Debug.LogWarning("load save error");
+                }
             }
 
             ChangeState(false);
@@ -59,7 +61,7 @@ namespace WOC
 
         private void ChangeState(bool active)
         {
-            content.SetActive(active);
+            m_Content.SetActive(active);
         }
 
         public void OnClick(int index)

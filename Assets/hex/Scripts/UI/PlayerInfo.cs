@@ -27,13 +27,13 @@ namespace WOC
             movesManager.OnMoveEnd -= OnMoveEnd;
         }
 
-        private void OnMoveEnd(Player player, bool isFirstStage, List<Player> players, GridCreator grid)
+        private void OnMoveEnd(OnMoveEndEventArgs args)
         {
-            string t = isFirstStage ? "Фаза атаки" : "Фаза пополнения";
-            string t1 = isFirstStage ? string.Empty : $"Войск в наличии - {player.AvailableAmount}";
-            label.text = $"{t} - сейчас ходит {player.Name} {t1}";
+            string t = args.IsFirstStage ? "Фаза атаки" : "Фаза пополнения";
+            string t1 = args.IsFirstStage ? string.Empty : $"Войск в наличии - {args.CurrentPlayer.AvailableAmount}";
+            label.text = $"{t} - сейчас ходит {args.CurrentPlayer.Name} {t1}";
 
-            backgroundImage.color = player.Color;
+            backgroundImage.color = args.CurrentPlayer.Color;
         }
     }
 }

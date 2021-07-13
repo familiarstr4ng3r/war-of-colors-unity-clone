@@ -29,9 +29,9 @@ namespace WOC
             movesManager.OnMoveEnd -= OnMoveEnd;
         }
 
-        private void OnMoveEnd(Player currentPlayer, bool isFirstStage, List<Player> players, GridCreator grid)
+        private void OnMoveEnd(OnMoveEndEventArgs args)
         {
-            label.text = isFirstStage ? "Завершить ход" : "Расставьте армии";
+            label.text = args.IsFirstStage ? "Завершить ход" : "Расставьте армии";
         }
     }
 }

@@ -39,8 +39,8 @@ public class PlayersWindow : MonoBehaviour
     {
         int i = players.Count;
 
-        var element = Instantiate(playerPrefab, playersParent);
-        element.name = "[Player Element]: " + i;
+        PlayerElement element = Instantiate(playerPrefab, playersParent);
+        element.Init(i);
         element.transform.SetSiblingIndex(i);
         players.Add(element);
 

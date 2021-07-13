@@ -6,10 +6,34 @@ using UnityEngine;
 
 namespace WOC
 {
+    public class OnGameEndEventArgs
+    {
+        public Player Winner { get; }
+
+        public OnGameEndEventArgs(Player winner)
+        {
+            Winner = winner;
+        }
+    }
+
+    public class OnMoveEndEventArgs
+    {
+        public Player CurrentPlayer { get; }
+        public bool IsFirstStage { get; }
+        public List<Player> Players { get; }
+
+        public OnMoveEndEventArgs(Player currentPlayer, bool isFirstStage, List<Player> players)
+        {
+            CurrentPlayer = currentPlayer;
+            IsFirstStage = isFirstStage;
+            Players = players;
+        }
+    }
+
     public class MovesManager : MonoBehaviour
     {
-        public event Action<Player> OnGameEnd;
-        public event Action<Player, bool, List<Player>, GridCreator> OnMoveEnd;
+        public event Action<OnGameEndEventArgs> OnGameEnd = null;
+        public event Action<OnMoveEndEventArgs> OnMoveEnd = null;
 
         [SerializeField] private ClickPointer pointer = null;
 
@@ -63,6 +87,11 @@ namespace WOC
             }
         }
 
+        private void ForceMoveEndEvent()
+        {
+            OnMoveEnd?.Invoke(new OnMoveEndEventArgs(currentPlayer, isFirstStage, players));
+        }
+
         public void Init()
         {
             isGameStarted = true;
@@ -73,7 +102,7 @@ namespace WOC
             grid.Create();
             grid.SetPlayers(players);
 
-            OnMoveEnd?.Invoke(currentPlayer, isFirstStage, players, grid);
+            ForceMoveEndEvent();
         }
 
         public void Load(SaveData data)
@@ -93,7 +122,7 @@ namespace WOC
             grid.Create();
             grid.Load(data);
 
-            OnMoveEnd?.Invoke(currentPlayer, isFirstStage, players, grid);
+            ForceMoveEndEvent();
         }
 
         private void UpdateCurrentPlayer()
@@ -116,7 +145,7 @@ namespace WOC
 
             isFirstStage = !isFirstStage;
 
-            OnMoveEnd?.Invoke(currentPlayer, isFirstStage, players, grid);
+            ForceMoveEndEvent();
 
             pointer.Deactivate();
         }
@@ -376,7 +405,7 @@ namespace WOC
 
             sliderWindow.Deactivate();
 
-            OnMoveEnd?.Invoke(currentPlayer, isFirstStage, players, grid);
+            ForceMoveEndEvent();
         }
 
         public void OnClickTransfer(int amount)
@@ -386,7 +415,7 @@ namespace WOC
 
             sliderWindow.Deactivate();
 
-            OnMoveEnd?.Invoke(currentPlayer, isFirstStage, players, grid);
+            ForceMoveEndEvent();
         }
 
         private void CheckPlayerWin()
@@ -396,7 +425,7 @@ namespace WOC
             if (winners.Length == 1)
             {
                 IsClickBlocked = true;
-                OnGameEnd?.Invoke(winners[0]);
+                OnGameEnd?.Invoke(new OnGameEndEventArgs(winners[0]));
             }
         }
 
