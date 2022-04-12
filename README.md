@@ -1,2 +1,5 @@
 # War of colors
-Game clone created using Unity engine
+
+Turn based strategy game created in **Unity** engine
+
+Reference — https://apkpure.com/war-of-colors/sva.warofcolors.free
